@@ -54,12 +54,6 @@ variable "administrator_creds_vault_path" {
   type        = string
 }
 
-# variable "administrator_password_rotator_revision" {
-#   description = "Password rotate function. Increment number to rotate password"
-#   type        = number
-#   default     = 1
-# }
-
 variable "server_version" {
   description = "Specifies the version of PostgreSQL to use. Valid values are 9.5, 9.6, and 10.0. Changing this forces a new resource to be created."
   type        = string
@@ -138,18 +132,6 @@ variable "postgresql_configurations" {
   default     = {}
 }
 
-variable "create_replica_instance" {
-  description = "Create read replca for postgres instance. Accepted values true or false"
-  type        = bool
-  default     = false
-}
-
-variable "replica_instance_location" {
-  description = "Geo location for read replica"
-  type        = string
-  default     = ""
-}
-
 variable "private_endpoint_enabled" {
   description = "Whether or not private endpoint is enabled for this server. Possible values are true and false."
   type        = bool
@@ -162,14 +144,8 @@ variable "private_endpoint_name_prefix" {
   default     = "pe"
 }
 
-variable "private_endpoint_primary_subnet_id" {
-  description = "The subnet ID where the private link need to be created. Primary instance."
-  type        = string
-  default     = ""
-}
-
-variable "private_endpoint_replica_subnet_id" {
-  description = "The subnet ID where the private link need to be created. Replica instance"
+variable "private_endpoint_subnet_id" {
+  description = "The subnet ID where the private link need to be created."
   type        = string
   default     = ""
 }
@@ -210,14 +186,8 @@ variable "privatelink_dns_zone_rg_name" {
   default     = ""
 }
 
-variable "switch_dns_cname_to_replica" {
-  description = "DNS CNAME switchover to replica instance incase of replica promoted to primary"
-  type        = bool
-  default     = false
-}
-
-variable "dns_cname_ttl" {
-  description = "DNS CNAME record TTL"
-  type        = number
-  default     = 300
-}
+# variable "dns_cname_ttl" {
+#   description = "DNS CNAME record TTL"
+#   type        = number
+#   default     = 300
+# }
