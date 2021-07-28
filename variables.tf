@@ -3,6 +3,11 @@ variable "resource_group_name" {
   type        = string
 }
 
+variable "replica_resource_group_name" {
+  description = "The name of the resource group in which to create the PostgreSQL Server. Changing this forces a new resource to be created."
+  type        = string
+}
+
 variable "location" {
   description = "Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created."
   type        = string
@@ -132,6 +137,18 @@ variable "postgresql_configurations" {
   default     = {}
 }
 
+variable "create_replica_instance" {
+  description = "Create read replca for postgres instance. Accepted values true or false"
+  type        = bool
+  default     = false
+}
+
+variable "replica_instance_location" {
+  description = "Geo location for read replica"
+  type        = string
+  default     = ""
+}
+
 variable "private_endpoint_enabled" {
   description = "Whether or not private endpoint is enabled for this server. Possible values are true and false."
   type        = bool
@@ -146,6 +163,12 @@ variable "private_endpoint_name_prefix" {
 
 variable "private_endpoint_subnet_id" {
   description = "The subnet ID where the private link need to be created."
+  type        = string
+  default     = ""
+}
+
+variable "private_endpoint_replica_subnet_id" {
+  description = "The subnet ID where the private link need to be created. Replica instance"
   type        = string
   default     = ""
 }
