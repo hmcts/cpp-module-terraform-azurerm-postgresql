@@ -99,12 +99,12 @@ resource "azurerm_postgresql_virtual_network_rule" "vnet_rules" {
 }
 
 resource "azurerm_postgresql_configuration" "db_configs" {
-  count               = length(keys(var.postgresql_configurations))
+  for_each = var.postgresql_configurations
   resource_group_name = var.resource_group_name
   server_name         = azurerm_postgresql_server.server.name
 
-  name  = element(keys(var.postgresql_configurations), count.index)
-  value = element(values(var.postgresql_configurations), count.index)
+  name  = each.key
+  value = each.value
 }
 
 resource "azurerm_private_endpoint" "private_endpoint" {
