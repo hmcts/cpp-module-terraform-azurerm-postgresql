@@ -99,60 +99,10 @@ resource "azurerm_postgresql_virtual_network_rule" "vnet_rules" {
 }
 
 resource "azurerm_postgresql_configuration" "db_configs" {
-  for_each = var.postgresql_configurations
+  for_each            = var.postgresql_configurations
   resource_group_name = var.resource_group_name
   server_name         = azurerm_postgresql_server.server.name
 
   name  = each.key
   value = each.value
 }
-
-resource "azurerm_private_endpoint" "private_endpoint" {
-  count               = var.private_endpoint_enabled ? 1 : 0
-  name                = "${var.private_endpoint_name_prefix}-${azurerm_postgresql_server.server.name}"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  subnet_id           = var.private_endpoint_subnet_id
-
-  private_service_connection {
-    name                           = "${var.private_service_connection_name_prefix}-${azurerm_postgresql_server.server.name}"
-    private_connection_resource_id = azurerm_postgresql_server.server.id
-    subresource_names              = ["postgresqlServer"]
-    is_manual_connection           = var.private_service_connection_is_manual
-  }
-
-  private_dns_zone_group {
-    name                 = var.privatelink_dns_zone_group_name
-    private_dns_zone_ids = [var.privatelink_dns_zone_id]
-  }
-}
-
-
-resource "azurerm_private_endpoint" "private_endpoint_replica" {
-  count               = var.private_endpoint_enabled && var.create_replica_instance ? 1 : 0
-  name                = "${var.private_endpoint_name_prefix}-${azurerm_postgresql_server.server_replica[0].name}"
-  location            = var.replica_instance_location
-  resource_group_name = var.resource_group_name
-  subnet_id           = var.private_endpoint_replica_subnet_id
-
-  private_service_connection {
-    name                           = "${var.private_service_connection_name_prefix}-${azurerm_postgresql_server.server_replica[0].name}"
-    private_connection_resource_id = azurerm_postgresql_server.server_replica[0].id
-    subresource_names              = ["postgresqlServer"]
-    is_manual_connection           = var.private_service_connection_is_manual
-  }
-
-  private_dns_zone_group {
-    name                 = var.privatelink_dns_zone_group_name
-    private_dns_zone_ids = [var.privatelink_dns_zone_id]
-  }
-}
-# resource "azurerm_private_dns_cname_record" "server_name_cname_record" {
-#   name                = var.server_name
-#   zone_name           = var.privatelink_dns_zone_name
-#   resource_group_name = var.privatelink_dns_zone_rg_name
-#   ttl                 = var.dns_cname_ttl
-#   record              = "${azurerm_postgresql_server.server.name}.${var.privatelink_dns_zone_name}"
-
-#   depends_on = [azurerm_postgresql_server.server]
-# }

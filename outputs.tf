@@ -46,23 +46,3 @@ output "vnet_rule_ids" {
   description = "The list of all vnet rule resource ids"
   value       = [azurerm_postgresql_virtual_network_rule.vnet_rules.*.id]
 }
-
-output "private_endpoint_id" {
-  description = "private endpoint primary instance ID"
-  value       = azurerm_private_endpoint.private_endpoint.*.id
-}
-
-output "private_endpoint_ip_address" {
-  description = "private endpoint private IP address"
-  value       = azurerm_private_endpoint.private_endpoint.*.private_service_connection
-}
-
-output "replica_private_endpoint_id" {
-  description = "private endpoint replica instance ID"
-  value       = azurerm_private_endpoint.private_endpoint_replica.*.id
-}
-
-output "replica_private_endpoint_ip_address" {
-  description = "replica private endpoint private IP address"
-  value       = azurerm_private_endpoint.private_endpoint_replica.*.private_service_connection
-}
