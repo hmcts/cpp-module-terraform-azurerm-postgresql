@@ -148,3 +148,21 @@ variable "replica_instance_location" {
   type        = string
   default     = ""
 }
+
+variable "enable_monitoring" {
+  description = "Enable monitoring for postgres instance. Accepted values true or false"
+  type        = bool
+  default     = false
+}
+
+variable "action_group_name" {
+  description = "Azure monitor Action Group"
+  type        = string
+  default     = "platformDevNotify"
+}
+
+variable "actiongroup_resource_group_name" {
+  description = "Azure monitor action group resource group name"
+  type        = string
+  default     = "rg-mdv-int-01"
+}
