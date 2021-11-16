@@ -94,14 +94,14 @@ resource "azurerm_postgresql_virtual_network_rule" "vnet_rules" {
   count               = length(var.vnet_rules)
   name                = format("%s%s", var.vnet_rule_name_prefix, lookup(var.vnet_rules[count.index], "name", count.index))
   resource_group_name = var.resource_group_name
-  server_name         = azurerm_postgresql_server.server.name
+  server_name         = element(split("/", azurerm_postgresql_server.server.id), length(split("/", azurerm_postgresql_server.server.id))-1)
   subnet_id           = var.vnet_rules[count.index]["subnet_id"]
 }
 
 resource "azurerm_postgresql_configuration" "db_configs" {
   for_each            = var.postgresql_configurations
   resource_group_name = var.resource_group_name
-  server_name         = azurerm_postgresql_server.server.name
+  server_name         = element(split("/", azurerm_postgresql_server.server.id), length(split("/", azurerm_postgresql_server.server.id))-1)
 
   name  = each.key
   value = each.value
