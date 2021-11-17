@@ -107,6 +107,15 @@ resource "azurerm_postgresql_configuration" "db_configs" {
   value = each.value
 }
 
+resource "azurerm_postgresql_configuration" "db_configs_replica" {
+  for_each            = var.create_replica_instance ? var.postgresql_configurations : {}
+  resource_group_name = var.replica_resource_group_name
+  server_name         = element(split("/", azurerm_postgresql_server.server_replica.0.id), length(split("/", azurerm_postgresql_server.server_replica.0.id))-1)
+
+  name  = each.key
+  value = each.value
+}
+
 data "azurerm_monitor_action_group" "platformDev" {
   name = var.action_group_name
   resource_group_name = var.actiongroup_resource_group_name
