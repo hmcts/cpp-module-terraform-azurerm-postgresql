@@ -121,6 +121,103 @@ data "azurerm_monitor_action_group" "platformDev" {
   resource_group_name = var.actiongroup_resource_group_name
 }
 
+data "azurerm_log_analytics_workspace" "log_analytics_workspace" {
+  name                = var.log_analytics_workspace_name
+  resource_group_name = var.log_analytics_workspace_resource_group_name
+}
+
+resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_primary" {
+  count = var.log_to_azure_monitor_primary.enable ? 1 : 0
+  name               = "log_to_azure_monitor"
+  target_resource_id = azurerm_postgresql_server.server.id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
+
+  log {
+    category = "PostgreSQLLogs"
+    enabled  = var.log_to_azure_monitor_primary.postgresql_logs.enabled
+
+    retention_policy {
+      enabled = var.log_to_azure_monitor_primary.postgresql_logs.retention_enabled
+      days = var.log_to_azure_monitor_primary.postgresql_logs.retention_days
+    }
+  }
+
+  log {
+    category = "QueryStoreRuntimeStatistics"
+    enabled  = var.log_to_azure_monitor_primary.querystore_runtime_statistics.enabled
+
+    retention_policy {
+      enabled = var.log_to_azure_monitor_primary.querystore_runtime_statistics.retention_enabled
+      days = var.log_to_azure_monitor_primary.querystore_runtime_statistics.retention_days
+    }
+  }
+
+  log {
+    category = "QueryStoreWaitStatistics"
+    enabled  = var.log_to_azure_monitor_primary.querystore_wait_statistics.enabled
+
+    retention_policy {
+      enabled = var.log_to_azure_monitor_primary.querystore_wait_statistics.retention_enabled
+      days = var.log_to_azure_monitor_primary.querystore_wait_statistics.retention_days
+    }
+  }
+
+  metric {
+    category = "AllMetrics"
+    enabled  = var.log_to_azure_monitor_primary.all_metrics.enabled
+    retention_policy {
+      enabled = var.log_to_azure_monitor_primary.all_metrics.retention_enabled
+      days = var.log_to_azure_monitor_primary.all_metrics.retention_days
+    }
+  }
+}
+
+resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_replica" {
+  count = var.log_to_azure_monitor_replica.enable ? 1 : 0
+  name               = "log_to_azure_monitor"
+  target_resource_id = azurerm_postgresql_server.server.id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
+
+  log {
+    category = "PostgreSQLLogs"
+    enabled  = var.log_to_azure_monitor_replica.postgresql_logs.enabled
+
+    retention_policy {
+      enabled = var.log_to_azure_monitor_replica.postgresql_logs.retention_enabled
+      days = var.log_to_azure_monitor_replica.postgresql_logs.retention_days
+    }
+  }
+
+  log {
+    category = "QueryStoreRuntimeStatistics"
+    enabled  = var.log_to_azure_monitor_replica.querystore_runtime_statistics.enabled
+
+    retention_policy {
+      enabled = var.log_to_azure_monitor_replica.querystore_runtime_statistics.retention_enabled
+      days = var.log_to_azure_monitor_replica.querystore_runtime_statistics.retention_days
+    }
+  }
+
+  log {
+    category = "QueryStoreWaitStatistics"
+    enabled  = var.log_to_azure_monitor_replica.querystore_wait_statistics.enabled
+
+    retention_policy {
+      enabled = var.log_to_azure_monitor_replica.querystore_wait_statistics.retention_enabled
+      days = var.log_to_azure_monitor_replica.querystore_wait_statistics.retention_days
+    }
+  }
+
+  metric {
+    category = "AllMetrics"
+    enabled  = var.log_to_azure_monitor_replica.all_metrics.enabled
+    retention_policy {
+      enabled = var.log_to_azure_monitor_replica.all_metrics.retention_enabled
+      days = var.log_to_azure_monitor_replica.all_metrics.retention_days
+    }
+  }
+}
+
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_active_connections" {
   count               = var.enable_monitoring ?  1 : 0
   name                = "postgres_active_connections_greater_than_80_percent"

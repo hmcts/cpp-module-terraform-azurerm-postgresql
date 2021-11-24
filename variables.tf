@@ -166,3 +166,113 @@ variable "actiongroup_resource_group_name" {
   type        = string
   default     = "rg-mdv-int-01"
 }
+
+variable "log_analytics_workspace_name" {
+  description = "Azure Log Analytics Workspace Name"
+  type        = string
+}
+
+variable "log_analytics_workspace_resource_group_name" {
+  description = "Azure Log Analytics Workspace Resource Group Name"
+  type        = string
+}
+
+variable "log_to_azure_monitor_primary" {
+  description = "Logging to Azure Monitor Settings for Primary Instance"
+  type        = object({
+    enable = bool
+    postgresql_logs = object({
+      enabled = bool
+      retention_enabled = bool
+      retention_days = number
+    })
+    querystore_runtime_statistics = object({
+      enabled = bool
+      retention_enabled = bool
+      retention_days = number      
+    })
+    querystore_wait_statistics = object({
+      enabled = bool
+      retention_enabled = bool
+      retention_days = number      
+    })
+    all_metrics = object({
+      enabled = bool
+      retention_enabled = bool
+      retention_days = number      
+    })
+  })
+  default     = {
+    enable = false
+    postgresql_logs = {
+      enabled = true
+      retention_enabled = true
+      retention_days = 7
+    }
+    querystore_runtime_statistics = {
+      enabled = true
+      retention_enabled = true
+      retention_days = 7
+    }
+    querystore_wait_statistics = {
+      enabled = true
+      retention_enabled = true
+      retention_days = 7
+    }
+    all_metrics = {
+      enabled = false
+      retention_enabled = true
+      retention_days = 7
+    }
+  }
+}
+
+variable "log_to_azure_monitor_replica" {
+  description = "Logging to Azure Monitor Settings for Replica Instance"
+  type        = object({
+    enable = bool
+    postgresql_logs = object({
+      enabled = bool
+      retention_enabled = bool
+      retention_days = number
+    })
+    querystore_runtime_statistics = object({
+      enabled = bool
+      retention_enabled = bool
+      retention_days = number      
+    })
+    querystore_wait_statistics = object({
+      enabled = bool
+      retention_enabled = bool
+      retention_days = number      
+    })
+    all_metrics = object({
+      enabled = bool
+      retention_enabled = bool
+      retention_days = number      
+    })
+  })
+  default     = {
+    enable = false
+    postgresql_logs = {
+      enabled = true
+      retention_enabled = true
+      retention_days = 7
+    }
+    querystore_runtime_statistics = {
+      enabled = true
+      retention_enabled = true
+      retention_days = 7
+    }
+    querystore_wait_statistics = {
+      enabled = true
+      retention_enabled = true
+      retention_days = 7
+    }
+    all_metrics = {
+      enabled = false
+      retention_enabled = true
+      retention_days = 7
+    }
+  }
+}
