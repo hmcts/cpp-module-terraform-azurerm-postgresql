@@ -220,7 +220,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_replica" {
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_active_connections" {
   count               = var.enable_monitoring ?  1 : 0
-  name                = "postgres_active_connections_greater_than_80_percent"
+  name                = "postgres_active_connections_greater_than_80_percent_${azurerm_postgresql_server.server.name}"
   resource_group_name = var.resource_group_name
   scopes              = [azurerm_postgresql_server.server.id]
   description         = "Whenever the maximum active connections is greater than 80%"
@@ -241,7 +241,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_active_connections" {
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_failed_connections" {
   count               = var.enable_monitoring ?  1 : 0
-  name                = "postgres_failed_connections_greater_than_10"
+  name                = "postgres_failed_connections_greater_than_10_${azurerm_postgresql_server.server.name}"
   resource_group_name = var.resource_group_name
   scopes              = [azurerm_postgresql_server.server.id]
   description         = "Whenever the maximum failed connections is greater than 10"
@@ -262,7 +262,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_failed_connections" {
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_cpu" {
   count               = var.enable_monitoring ?  1 : 0
-  name                = "postgres_cpu_percent_95"
+  name                = "postgres_cpu_percent_95_${azurerm_postgresql_server.server.name}"
   resource_group_name = var.resource_group_name
   scopes              = [azurerm_postgresql_server.server.id]
   description         = "Whenever the cpu utilization is greater than 95"
@@ -283,7 +283,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_cpu" {
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_memory" {
   count               = var.enable_monitoring ?  1 : 0
-  name                = "postgres_memory_percent_95"
+  name                = "postgres_memory_percent_95_${azurerm_postgresql_server.server.name}"
   resource_group_name = var.resource_group_name
   scopes              = [azurerm_postgresql_server.server.id]
   description         = "Whenever the memory utilization is greater than 95"
@@ -304,7 +304,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_memory" {
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_io_utilization" {
   count               = var.enable_monitoring ?  1 : 0
-  name                = "postgres_io_utilization_90"
+  name                = "postgres_io_utilization_90_${azurerm_postgresql_server.server.name}"
   resource_group_name = var.resource_group_name
   scopes              = [azurerm_postgresql_server.server.id]
   description         = "Whenever the io utilization is greater than 90"
@@ -325,7 +325,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_io_utilization" {
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_storage_utilization" {
   count               = var.enable_monitoring ?  1 : 0
-  name                = "postgres_storage_utilization_90"
+  name                = "postgres_storage_utilization_90_${azurerm_postgresql_server.server.name}"
   resource_group_name = var.resource_group_name
   scopes              = [azurerm_postgresql_server.server.id]
   description         = "Whenever the storage utilization is greater than 90"
@@ -344,7 +344,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_storage_utilization" 
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_replica_lag" {
   count               = var.enable_monitoring && var.create_replica_instance ?  1 : 0
-  name                = "postgres_replica_lag_1minute"
+  name                = "postgres_replica_lag_1minute_${azurerm_postgresql_server.server.name}"
   resource_group_name = var.resource_group_name
   scopes              = [azurerm_postgresql_server.server.id]
   description         = "Whenever the replica lag is greater than 1 minute"
