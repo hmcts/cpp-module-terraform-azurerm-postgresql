@@ -83,7 +83,7 @@ resource "azurerm_postgresql_configuration" "db_configs_replica" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_primary" {
-  count = var.log_to_azure_monitor_single_primary.enable ? 1 : 0
+  count = var.log_to_azure_monitor_single_primary.enable && var.single_server ? 1 : 0
   name               = "log_to_azure_monitor"
   target_resource_id = local.primary_server_id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
@@ -129,7 +129,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_prima
 }
 
 resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_replica" {
-  count = var.log_to_azure_monitor_single_replica.enable ? 1 : 0
+  count = var.log_to_azure_monitor_single_replica.enable && var.single_server ? 1 : 0
   name               = "log_to_azure_monitor"
   target_resource_id = local.primary_server_id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
