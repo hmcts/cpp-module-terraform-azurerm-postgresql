@@ -83,6 +83,12 @@ variable "public_network_access_enabled" {
   default     = false
 }
 
+variable "single_server" {
+  description = "Is the instance type single server or flexible server. Default is flexible server."
+  type        = bool
+  default     = false
+}
+
 variable "db_names" {
   description = "The list of names of the PostgreSQL Database, which needs to be a valid PostgreSQL identifier. Changing this forces a new resource to be created."
   type        = list(string)
@@ -99,6 +105,18 @@ variable "db_collation" {
   description = "Specifies the Collation for the PostgreSQL Database, which needs to be a valid PostgreSQL Collation. Note that Microsoft uses different notation - en-US instead of en_US. Changing this forces a new resource to be created."
   type        = string
   default     = "English_United States.1252"
+}
+
+variable "delegated_subnet_id" {
+  description = "Subnet ID where the flexible server need to be provisioned. Only apply to flexible server."
+  type        = string
+  default     = null
+}
+
+variable "private_dns_zone_id" {
+  description = "Private zone ID for the DNS entry to be created. Only apply to flexible server."
+  type        = string
+  default     = null
 }
 
 variable "firewall_rule_prefix" {
@@ -177,7 +195,7 @@ variable "log_analytics_workspace_resource_group_name" {
   type        = string
 }
 
-variable "log_to_azure_monitor_primary" {
+variable "log_to_azure_monitor_single_primary" {
   description = "Logging to Azure Monitor Settings for Primary Instance"
   type        = object({
     enable = bool
@@ -227,7 +245,7 @@ variable "log_to_azure_monitor_primary" {
   }
 }
 
-variable "log_to_azure_monitor_replica" {
+variable "log_to_azure_monitor_single_replica" {
   description = "Logging to Azure Monitor Settings for Replica Instance"
   type        = object({
     enable = bool
@@ -273,6 +291,104 @@ variable "log_to_azure_monitor_replica" {
       enabled = false
       retention_enabled = true
       retention_days = 7
+    }
+  }
+}
+
+variable "log_to_azure_monitor_flexible" {
+  description = "Logging to Azure Monitor Settings for Flexible Instance"
+  type        = object({
+    enable = bool
+    postgresql_logs = object({
+      enabled = bool
+      retention_enabled = bool
+      retention_days = number
+    })
+    all_metrics = object({
+      enabled = bool
+      retention_enabled = bool
+      retention_days = number      
+    })
+  })
+  default     = {
+    enable = false
+    postgresql_logs = {
+      enabled = true
+      retention_enabled = true
+      retention_days = 7
+    }
+    all_metrics = {
+      enabled = false
+      retention_enabled = true
+      retention_days = 7
+    }
+  }
+}
+
+variable "alerts_config_flexible" {
+  description = "Configure alerts for flexible server"
+  type = object({
+    active_connections = object({
+      aggregation = string
+      operator = string
+      alert_sensitivity = string
+    }),
+    connections_failed = object({
+      aggregation = string
+      operator = string
+      alert_sensitivity = string    
+    }),
+    cpu_percent = object({
+      aggregation = string
+      operator = string
+      threshold = number
+    }),
+    memory_percent = object({
+      aggregation = string
+      operator = string
+      threshold = number      
+    }),
+    iops = object({
+      aggregation = string
+      operator = string
+      alert_sensitivity = string        
+    })
+    storage_percent = object({
+      aggregation = string
+      operator = string
+      threshold = number       
+    })
+  })
+  default = {
+    active_connections = {
+      aggregation = "Maximum"
+      operator = "GreaterThan"
+      alert_sensitivity = "Low"
+    }
+    connections_failed = {
+      aggregation = "Total"
+      operator = "GreaterThan"
+      alert_sensitivity = "Medium"    
+    }
+    cpu_percent = {
+      aggregation = "Average"
+      operator = "GreaterThan"
+      threshold = 95
+    }
+    memory_percent = {
+      aggregation = "Average"
+      operator = "GreaterThan"
+      threshold = 95  
+    }
+    iops = {
+      aggregation = "Maximum"
+      operator = "GreaterThan"
+      alert_sensitivity = "Low"  
+    }
+    storage_percent = {
+      aggregation = "Average"
+      operator = "GreaterThan"
+      threshold = 90
     }
   }
 }
