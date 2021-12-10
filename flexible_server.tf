@@ -82,7 +82,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_active_connections_fl
     operator          = var.alerts_config_flexible.active_connections.operator
     alert_sensitivity = var.alerts_config_flexible.active_connections.alert_sensitivity
   }
-  window_size = "PT30M"
+  window_size = "PT5M"
   frequency = "PT5M"
   action {
     action_group_id = data.azurerm_monitor_action_group.platformDev.id
@@ -103,7 +103,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_failed_connections_fl
     operator          = var.alerts_config_flexible.connections_failed.operator
     alert_sensitivity = var.alerts_config_flexible.connections_failed.alert_sensitivity
   }
-  window_size = "PT30M"
+  window_size = "PT5M"
   frequency = "PT5M"
   action {
     action_group_id = data.azurerm_monitor_action_group.platformDev.id
@@ -112,7 +112,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_failed_connections_fl
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_cpu_flexible" {
   count               = var.enable_monitoring && !var.single_server ?  1 : 0
-  name                = "postgres_cpu_percent_95_${local.primary_server_name}"
+  name                = "postgres_cpu_percent_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
   description         = "CPU utilization is greater"
@@ -124,7 +124,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_cpu_flexible" {
     operator         = var.alerts_config_flexible.cpu_percent.operator
     threshold        = var.alerts_config_flexible.cpu_percent.threshold
   }
-  window_size = "PT30M"
+  window_size = "PT5M"
   frequency = "PT5M"
   action {
     action_group_id = data.azurerm_monitor_action_group.platformDev.id
@@ -133,7 +133,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_cpu_flexible" {
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_memory_flexible" {
   count               = var.enable_monitoring && !var.single_server ?  1 : 0
-  name                = "postgres_memory_percent_95_${local.primary_server_name}"
+  name                = "postgres_memory_percent_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
   description         = "Memory utilization"
@@ -145,7 +145,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_memory_flexible" {
     operator         = var.alerts_config_flexible.memory_percent.operator
     threshold        = var.alerts_config_flexible.memory_percent.threshold
   }
-  window_size = "PT30M"
+  window_size = "PT5M"
   frequency = "PT5M"
   action {
     action_group_id = data.azurerm_monitor_action_group.platformDev.id
@@ -166,7 +166,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_iops_utilization_flex
     operator          = var.alerts_config_flexible.iops.operator
     alert_sensitivity = var.alerts_config_flexible.iops.alert_sensitivity
   }
-  window_size = "PT1H"
+  window_size = "PT5M"
   frequency = "PT5M"
   action {
     action_group_id = data.azurerm_monitor_action_group.platformDev.id
@@ -175,7 +175,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_iops_utilization_flex
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_storage_utilization_flexible" {
   count               = var.enable_monitoring && !var.single_server ?  1 : 0
-  name                = "postgres_storage_utilization_90_${local.primary_server_name}"
+  name                = "postgres_storage_utilization_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
   description         = "Storage utilization is greater"
