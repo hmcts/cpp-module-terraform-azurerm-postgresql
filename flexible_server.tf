@@ -24,6 +24,9 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
   }
 
   tags = var.tags
+  lifecycle {
+    ignore_changes = [tags["created_by"],tags["created_time"]]
+  }
 }
 
 resource "azurerm_postgresql_flexible_server_firewall_rule" "firewall_rules" {

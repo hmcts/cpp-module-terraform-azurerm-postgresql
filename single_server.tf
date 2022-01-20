@@ -19,6 +19,9 @@ resource "azurerm_postgresql_server" "server" {
   public_network_access_enabled    = var.public_network_access_enabled
 
   tags = var.tags
+  lifecycle {
+    ignore_changes = [tags["created_by"],tags["created_time"]]
+  }
 }
 
 resource "azurerm_postgresql_server" "server_replica" {
@@ -45,6 +48,9 @@ resource "azurerm_postgresql_server" "server_replica" {
   creation_source_server_id = azurerm_postgresql_server.server.0.id
 
   tags = var.tags
+  lifecycle {
+    ignore_changes = [tags["created_by"],tags["created_time"]]
+  }
 }
 
 resource "azurerm_postgresql_firewall_rule" "firewall_rules" {
