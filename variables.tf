@@ -155,6 +155,12 @@ variable "postgresql_configurations" {
   default     = {}
 }
 
+variable "extensions" {
+  description = "This is value for azure extension under server configuration"
+  type = bool
+  default = false
+}
+
 variable "create_replica_instance" {
   description = "Create read replca for postgres instance. Accepted values true or false"
   type        = bool
