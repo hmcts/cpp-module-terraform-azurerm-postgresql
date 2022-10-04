@@ -20,7 +20,7 @@ resource "azurerm_postgresql_server" "server" {
 
   tags = var.tags
   lifecycle {
-    ignore_changes = [tags["created_by"],tags["created_time"]]
+    ignore_changes = [tags["created_by"], tags["created_time"]]
   }
 }
 
@@ -49,7 +49,7 @@ resource "azurerm_postgresql_server" "server_replica" {
 
   tags = var.tags
   lifecycle {
-    ignore_changes = [tags["created_by"],tags["created_time"]]
+    ignore_changes = [tags["created_by"], tags["created_time"]]
   }
 }
 
@@ -66,14 +66,14 @@ resource "azurerm_postgresql_virtual_network_rule" "vnet_rules" {
   count               = var.single_server ? length(var.vnet_rules) : 0
   name                = format("%s%s", var.vnet_rule_name_prefix, lookup(var.vnet_rules[count.index], "name", count.index))
   resource_group_name = var.resource_group_name
-  server_name         = element(split("/", local.primary_server_id), length(split("/", local.primary_server_id))-1)
+  server_name         = element(split("/", local.primary_server_id), length(split("/", local.primary_server_id)) - 1)
   subnet_id           = var.vnet_rules[count.index]["subnet_id"]
 }
 
 resource "azurerm_postgresql_configuration" "db_configs" {
   for_each            = var.single_server ? var.postgresql_configurations : {}
   resource_group_name = var.resource_group_name
-  server_name         = element(split("/", local.primary_server_id), length(split("/", local.primary_server_id))-1)
+  server_name         = element(split("/", local.primary_server_id), length(split("/", local.primary_server_id)) - 1)
 
   name  = each.key
   value = each.value
@@ -82,17 +82,17 @@ resource "azurerm_postgresql_configuration" "db_configs" {
 resource "azurerm_postgresql_configuration" "db_configs_replica" {
   for_each            = var.single_server && var.create_replica_instance ? var.postgresql_configurations : {}
   resource_group_name = var.replica_resource_group_name
-  server_name         = element(split("/", local.replica_single_server_id), length(split("/", local.replica_single_server_id))-1)
+  server_name         = element(split("/", local.replica_single_server_id), length(split("/", local.replica_single_server_id)) - 1)
 
   name  = each.key
   value = each.value
 }
 
 resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_primary" {
-  count = var.log_to_azure_monitor_single_primary.enable && var.single_server ? 1 : 0
-  name               = "log_to_azure_monitor"
-  target_resource_id = local.primary_server_id
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
+  count                      = var.log_to_azure_monitor_single_primary.enable && var.single_server ? 1 : 0
+  name                       = "log_to_azure_monitor"
+  target_resource_id         = local.primary_server_id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.0.id
 
   log {
     category = "PostgreSQLLogs"
@@ -100,7 +100,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_prima
 
     retention_policy {
       enabled = var.log_to_azure_monitor_single_primary.postgresql_logs.retention_enabled
-      days = var.log_to_azure_monitor_single_primary.postgresql_logs.retention_days
+      days    = var.log_to_azure_monitor_single_primary.postgresql_logs.retention_days
     }
   }
 
@@ -110,7 +110,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_prima
 
     retention_policy {
       enabled = var.log_to_azure_monitor_single_primary.querystore_runtime_statistics.retention_enabled
-      days = var.log_to_azure_monitor_single_primary.querystore_runtime_statistics.retention_days
+      days    = var.log_to_azure_monitor_single_primary.querystore_runtime_statistics.retention_days
     }
   }
 
@@ -120,7 +120,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_prima
 
     retention_policy {
       enabled = var.log_to_azure_monitor_single_primary.querystore_wait_statistics.retention_enabled
-      days = var.log_to_azure_monitor_single_primary.querystore_wait_statistics.retention_days
+      days    = var.log_to_azure_monitor_single_primary.querystore_wait_statistics.retention_days
     }
   }
 
@@ -129,16 +129,16 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_prima
     enabled  = var.log_to_azure_monitor_single_primary.all_metrics.enabled
     retention_policy {
       enabled = var.log_to_azure_monitor_single_primary.all_metrics.retention_enabled
-      days = var.log_to_azure_monitor_single_primary.all_metrics.retention_days
+      days    = var.log_to_azure_monitor_single_primary.all_metrics.retention_days
     }
   }
 }
 
 resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_replica" {
-  count = var.log_to_azure_monitor_single_replica.enable && var.single_server ? 1 : 0
-  name               = "log_to_azure_monitor"
-  target_resource_id = local.primary_server_id
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
+  count                      = var.log_to_azure_monitor_single_replica.enable && var.single_server ? 1 : 0
+  name                       = "log_to_azure_monitor"
+  target_resource_id         = local.primary_server_id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.0.id
 
   log {
     category = "PostgreSQLLogs"
@@ -146,7 +146,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_repli
 
     retention_policy {
       enabled = var.log_to_azure_monitor_single_replica.postgresql_logs.retention_enabled
-      days = var.log_to_azure_monitor_single_replica.postgresql_logs.retention_days
+      days    = var.log_to_azure_monitor_single_replica.postgresql_logs.retention_days
     }
   }
 
@@ -156,7 +156,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_repli
 
     retention_policy {
       enabled = var.log_to_azure_monitor_single_replica.querystore_runtime_statistics.retention_enabled
-      days = var.log_to_azure_monitor_single_replica.querystore_runtime_statistics.retention_days
+      days    = var.log_to_azure_monitor_single_replica.querystore_runtime_statistics.retention_days
     }
   }
 
@@ -166,7 +166,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_repli
 
     retention_policy {
       enabled = var.log_to_azure_monitor_single_replica.querystore_wait_statistics.retention_enabled
-      days = var.log_to_azure_monitor_single_replica.querystore_wait_statistics.retention_days
+      days    = var.log_to_azure_monitor_single_replica.querystore_wait_statistics.retention_days
     }
   }
 
@@ -175,13 +175,13 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_repli
     enabled  = var.log_to_azure_monitor_single_replica.all_metrics.enabled
     retention_policy {
       enabled = var.log_to_azure_monitor_single_replica.all_metrics.retention_enabled
-      days = var.log_to_azure_monitor_single_replica.all_metrics.retention_days
+      days    = var.log_to_azure_monitor_single_replica.all_metrics.retention_days
     }
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_active_connections" {
-  count               = var.enable_monitoring && var.single_server ?  1 : 0
+  count               = var.enable_monitoring && var.single_server ? 1 : 0
   name                = "postgres_active_connections_greater_than_80_percent_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -195,14 +195,14 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_active_connections" {
     threshold        = var.sku_name == "GP_Gen5_2" ? 120 : 200
   }
   window_size = "PT30M"
-  frequency = "PT5M"
+  frequency   = "PT5M"
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_failed_connections" {
-  count               = var.enable_monitoring && var.single_server ?  1 : 0
+  count               = var.enable_monitoring && var.single_server ? 1 : 0
   name                = "postgres_failed_connections_greater_than_10_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -216,14 +216,14 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_failed_connections" {
     threshold        = 10
   }
   window_size = "PT30M"
-  frequency = "PT5M"
+  frequency   = "PT5M"
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_cpu" {
-  count               = var.enable_monitoring && var.single_server ?  1 : 0
+  count               = var.enable_monitoring && var.single_server ? 1 : 0
   name                = "postgres_cpu_percent_95_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -237,14 +237,14 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_cpu" {
     threshold        = 95
   }
   window_size = "PT30M"
-  frequency = "PT5M"
+  frequency   = "PT5M"
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_memory" {
-  count               = var.enable_monitoring && var.single_server ?  1 : 0
+  count               = var.enable_monitoring && var.single_server ? 1 : 0
   name                = "postgres_memory_percent_95_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -258,14 +258,14 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_memory" {
     threshold        = 95
   }
   window_size = "PT30M"
-  frequency = "PT5M"
+  frequency   = "PT5M"
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_io_utilization" {
-  count               = var.enable_monitoring && var.single_server ?  1 : 0
+  count               = var.enable_monitoring && var.single_server ? 1 : 0
   name                = "postgres_io_utilization_90_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -279,14 +279,14 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_io_utilization" {
     threshold        = 95
   }
   window_size = "PT1H"
-  frequency = "PT5M"
+  frequency   = "PT5M"
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_storage_utilization" {
-  count               = var.enable_monitoring && var.single_server ?  1 : 0
+  count               = var.enable_monitoring && var.single_server ? 1 : 0
   name                = "postgres_storage_utilization_90_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -300,12 +300,12 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_storage_utilization" 
     threshold        = 90
   }
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_replica_lag" {
-  count               = var.enable_monitoring && var.create_replica_instance && var.single_server ?  1 : 0
+  count               = var.enable_monitoring && var.create_replica_instance && var.single_server ? 1 : 0
   name                = "postgres_replica_lag_1minute_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -320,6 +320,6 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_replica_lag" {
   }
   window_size = "PT15M"
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }

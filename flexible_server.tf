@@ -6,17 +6,17 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
 
   sku_name = var.sku_name
 
-  storage_mb                   = var.storage_mb
-  backup_retention_days        = var.backup_retention_days
+  storage_mb            = var.storage_mb
+  backup_retention_days = var.backup_retention_days
 
-  administrator_login              = data.vault_generic_secret.administrator_creds.data.administrator_login
-  administrator_password           = data.vault_generic_secret.administrator_creds.data.administrator_password
-  version                          = var.server_version
+  administrator_login    = data.vault_generic_secret.administrator_creds.data.administrator_login
+  administrator_password = data.vault_generic_secret.administrator_creds.data.administrator_password
+  version                = var.server_version
 
   delegated_subnet_id = var.delegated_subnet_id
   private_dns_zone_id = var.private_dns_zone_id
 
-  dynamic high_availability {
+  dynamic "high_availability" {
     for_each = var.create_replica_instance ? [1] : []
     content {
       mode = "ZoneRedundant"
@@ -25,16 +25,16 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
 
   tags = var.tags
   lifecycle {
-    ignore_changes = [tags["created_by"],tags["created_time"]]
+    ignore_changes = [tags["created_by"], tags["created_time"]]
   }
 }
 
 resource "azurerm_postgresql_flexible_server_firewall_rule" "firewall_rules" {
-  count               = var.single_server ? 0 : length(var.firewall_rules)
-  name                = format("%s%s", var.firewall_rule_prefix, lookup(var.firewall_rules[count.index], "name", count.index))
-  server_id           = local.primary_server_id
-  start_ip_address    = var.firewall_rules[count.index]["start_ip"]
-  end_ip_address      = var.firewall_rules[count.index]["end_ip"]
+  count            = var.single_server ? 0 : length(var.firewall_rules)
+  name             = format("%s%s", var.firewall_rule_prefix, lookup(var.firewall_rules[count.index], "name", count.index))
+  server_id        = local.primary_server_id
+  start_ip_address = var.firewall_rules[count.index]["start_ip"]
+  end_ip_address   = var.firewall_rules[count.index]["end_ip"]
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "db_configs" {
@@ -46,17 +46,17 @@ resource "azurerm_postgresql_flexible_server_configuration" "db_configs" {
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "db_config_extensions" {
-  count = var.extensions ? 1 : 0
-  name = "azure.extensions"
+  count     = var.extensions ? 1 : 0
+  name      = "azure.extensions"
   server_id = local.primary_server_id
-  value = "PG_BUFFERCACHE,PG_STAT_STATEMENTS"
+  value     = "PG_BUFFERCACHE,PG_STAT_STATEMENTS"
 }
 
 resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
-  count = var.log_to_azure_monitor_flexible.enable && !var.single_server ? 1 : 0
-  name               = "log_to_azure_monitor"
-  target_resource_id = local.primary_server_id
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.id
+  count                      = var.log_to_azure_monitor_flexible.enable && !var.single_server ? 1 : 0
+  name                       = "log_to_azure_monitor"
+  target_resource_id         = local.primary_server_id
+  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.0.id
 
   log {
     category = "PostgreSQLLogs"
@@ -64,7 +64,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
 
     retention_policy {
       enabled = var.log_to_azure_monitor_flexible.postgresql_logs.retention_enabled
-      days = var.log_to_azure_monitor_flexible.postgresql_logs.retention_days
+      days    = var.log_to_azure_monitor_flexible.postgresql_logs.retention_days
     }
   }
 
@@ -73,13 +73,13 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
     enabled  = var.log_to_azure_monitor_flexible.all_metrics.enabled
     retention_policy {
       enabled = var.log_to_azure_monitor_flexible.all_metrics.retention_enabled
-      days = var.log_to_azure_monitor_flexible.all_metrics.retention_days
+      days    = var.log_to_azure_monitor_flexible.all_metrics.retention_days
     }
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_active_connections_flexible" {
-  count               = var.enable_monitoring && !var.single_server ?  1 : 0
+  count               = var.enable_monitoring && !var.single_server ? 1 : 0
   name                = "postgres_active_connections_greater_than_dynamic_threshold_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -93,14 +93,14 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_active_connections_fl
     alert_sensitivity = var.alerts_config_flexible.active_connections.alert_sensitivity
   }
   window_size = "PT5M"
-  frequency = "PT5M"
+  frequency   = "PT5M"
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_failed_connections_flexible" {
-  count               = var.enable_monitoring && !var.single_server ?  1 : 0
+  count               = var.enable_monitoring && !var.single_server ? 1 : 0
   name                = "postgres_failed_connections_greater_than_threshold_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -114,14 +114,14 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_failed_connections_fl
     alert_sensitivity = var.alerts_config_flexible.connections_failed.alert_sensitivity
   }
   window_size = "PT5M"
-  frequency = "PT5M"
+  frequency   = "PT5M"
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_cpu_flexible" {
-  count               = var.enable_monitoring && !var.single_server ?  1 : 0
+  count               = var.enable_monitoring && !var.single_server ? 1 : 0
   name                = "postgres_cpu_percent_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -135,14 +135,14 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_cpu_flexible" {
     threshold        = var.alerts_config_flexible.cpu_percent.threshold
   }
   window_size = "PT5M"
-  frequency = "PT5M"
+  frequency   = "PT5M"
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_memory_flexible" {
-  count               = var.enable_monitoring && !var.single_server ?  1 : 0
+  count               = var.enable_monitoring && !var.single_server ? 1 : 0
   name                = "postgres_memory_percent_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -156,14 +156,14 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_memory_flexible" {
     threshold        = var.alerts_config_flexible.memory_percent.threshold
   }
   window_size = "PT5M"
-  frequency = "PT5M"
+  frequency   = "PT5M"
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_iops_utilization_flexible" {
-  count               = var.enable_monitoring && !var.single_server ?  1 : 0
+  count               = var.enable_monitoring && !var.single_server ? 1 : 0
   name                = "postgres_iops_utilization_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -177,14 +177,14 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_iops_utilization_flex
     alert_sensitivity = var.alerts_config_flexible.iops.alert_sensitivity
   }
   window_size = "PT5M"
-  frequency = "PT5M"
+  frequency   = "PT5M"
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_storage_utilization_flexible" {
-  count               = var.enable_monitoring && !var.single_server ?  1 : 0
+  count               = var.enable_monitoring && !var.single_server ? 1 : 0
   name                = "postgres_storage_utilization_${local.primary_server_name}"
   resource_group_name = var.resource_group_name
   scopes              = [local.primary_server_id]
@@ -198,6 +198,6 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_storage_utilization_f
     threshold        = var.alerts_config_flexible.storage_percent.threshold
   }
   action {
-    action_group_id = data.azurerm_monitor_action_group.platformDev.id
+    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }

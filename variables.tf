@@ -157,8 +157,8 @@ variable "postgresql_configurations" {
 
 variable "extensions" {
   description = "This is value for azure extension under server configuration"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "create_replica_instance" {
@@ -177,6 +177,18 @@ variable "enable_monitoring" {
   description = "Enable monitoring for postgres instance. Accepted values true or false"
   type        = bool
   default     = false
+}
+
+variable "log_analytics_workspace_enable_data_lookup" {
+  description = "Disable for testing"
+  type        = bool
+  default     = true
+}
+
+variable "action_group_enable_data_lookup" {
+  description = "Disable for testing"
+  type        = bool
+  default     = true
 }
 
 variable "action_group_name" {
@@ -203,130 +215,130 @@ variable "log_analytics_workspace_resource_group_name" {
 
 variable "log_to_azure_monitor_single_primary" {
   description = "Logging to Azure Monitor Settings for Primary Instance"
-  type        = object({
+  type = object({
     enable = bool
     postgresql_logs = object({
-      enabled = bool
+      enabled           = bool
       retention_enabled = bool
-      retention_days = number
+      retention_days    = number
     })
     querystore_runtime_statistics = object({
-      enabled = bool
+      enabled           = bool
       retention_enabled = bool
-      retention_days = number      
+      retention_days    = number
     })
     querystore_wait_statistics = object({
-      enabled = bool
+      enabled           = bool
       retention_enabled = bool
-      retention_days = number      
+      retention_days    = number
     })
     all_metrics = object({
-      enabled = bool
+      enabled           = bool
       retention_enabled = bool
-      retention_days = number      
+      retention_days    = number
     })
   })
-  default     = {
+  default = {
     enable = false
     postgresql_logs = {
-      enabled = true
+      enabled           = true
       retention_enabled = true
-      retention_days = 7
+      retention_days    = 7
     }
     querystore_runtime_statistics = {
-      enabled = true
+      enabled           = true
       retention_enabled = true
-      retention_days = 7
+      retention_days    = 7
     }
     querystore_wait_statistics = {
-      enabled = true
+      enabled           = true
       retention_enabled = true
-      retention_days = 7
+      retention_days    = 7
     }
     all_metrics = {
-      enabled = false
+      enabled           = false
       retention_enabled = true
-      retention_days = 7
+      retention_days    = 7
     }
   }
 }
 
 variable "log_to_azure_monitor_single_replica" {
   description = "Logging to Azure Monitor Settings for Replica Instance"
-  type        = object({
+  type = object({
     enable = bool
     postgresql_logs = object({
-      enabled = bool
+      enabled           = bool
       retention_enabled = bool
-      retention_days = number
+      retention_days    = number
     })
     querystore_runtime_statistics = object({
-      enabled = bool
+      enabled           = bool
       retention_enabled = bool
-      retention_days = number      
+      retention_days    = number
     })
     querystore_wait_statistics = object({
-      enabled = bool
+      enabled           = bool
       retention_enabled = bool
-      retention_days = number      
+      retention_days    = number
     })
     all_metrics = object({
-      enabled = bool
+      enabled           = bool
       retention_enabled = bool
-      retention_days = number      
+      retention_days    = number
     })
   })
-  default     = {
+  default = {
     enable = false
     postgresql_logs = {
-      enabled = true
+      enabled           = true
       retention_enabled = true
-      retention_days = 7
+      retention_days    = 7
     }
     querystore_runtime_statistics = {
-      enabled = true
+      enabled           = true
       retention_enabled = true
-      retention_days = 7
+      retention_days    = 7
     }
     querystore_wait_statistics = {
-      enabled = true
+      enabled           = true
       retention_enabled = true
-      retention_days = 7
+      retention_days    = 7
     }
     all_metrics = {
-      enabled = false
+      enabled           = false
       retention_enabled = true
-      retention_days = 7
+      retention_days    = 7
     }
   }
 }
 
 variable "log_to_azure_monitor_flexible" {
   description = "Logging to Azure Monitor Settings for Flexible Instance"
-  type        = object({
+  type = object({
     enable = bool
     postgresql_logs = object({
-      enabled = bool
+      enabled           = bool
       retention_enabled = bool
-      retention_days = number
+      retention_days    = number
     })
     all_metrics = object({
-      enabled = bool
+      enabled           = bool
       retention_enabled = bool
-      retention_days = number      
+      retention_days    = number
     })
   })
-  default     = {
+  default = {
     enable = false
     postgresql_logs = {
-      enabled = true
+      enabled           = true
       retention_enabled = true
-      retention_days = 7
+      retention_days    = 7
     }
     all_metrics = {
-      enabled = false
+      enabled           = false
       retention_enabled = true
-      retention_days = 7
+      retention_days    = 7
     }
   }
 }
@@ -335,66 +347,66 @@ variable "alerts_config_flexible" {
   description = "Configure alerts for flexible server"
   type = object({
     active_connections = object({
-      aggregation = string
-      operator = string
+      aggregation       = string
+      operator          = string
       alert_sensitivity = string
     }),
     connections_failed = object({
-      aggregation = string
-      operator = string
-      alert_sensitivity = string    
+      aggregation       = string
+      operator          = string
+      alert_sensitivity = string
     }),
     cpu_percent = object({
       aggregation = string
-      operator = string
-      threshold = number
+      operator    = string
+      threshold   = number
     }),
     memory_percent = object({
       aggregation = string
-      operator = string
-      threshold = number      
+      operator    = string
+      threshold   = number
     }),
     iops = object({
-      aggregation = string
-      operator = string
-      alert_sensitivity = string        
+      aggregation       = string
+      operator          = string
+      alert_sensitivity = string
     })
     storage_percent = object({
       aggregation = string
-      operator = string
-      threshold = number       
+      operator    = string
+      threshold   = number
     })
   })
   default = {
     active_connections = {
-      aggregation = "Maximum"
-      operator = "GreaterThan"
+      aggregation       = "Maximum"
+      operator          = "GreaterThan"
       alert_sensitivity = "Low"
     }
     connections_failed = {
-      aggregation = "Total"
-      operator = "GreaterThan"
-      alert_sensitivity = "Medium"    
+      aggregation       = "Total"
+      operator          = "GreaterThan"
+      alert_sensitivity = "Medium"
     }
     cpu_percent = {
       aggregation = "Average"
-      operator = "GreaterThan"
-      threshold = 95
+      operator    = "GreaterThan"
+      threshold   = 95
     }
     memory_percent = {
       aggregation = "Average"
-      operator = "GreaterThan"
-      threshold = 95  
+      operator    = "GreaterThan"
+      threshold   = 95
     }
     iops = {
-      aggregation = "Maximum"
-      operator = "GreaterThan"
-      alert_sensitivity = "Low"  
+      aggregation       = "Maximum"
+      operator          = "GreaterThan"
+      alert_sensitivity = "Low"
     }
     storage_percent = {
       aggregation = "Average"
-      operator = "GreaterThan"
-      threshold = 90
+      operator    = "GreaterThan"
+      threshold   = 90
     }
   }
 }
