@@ -24,11 +24,13 @@ data "vault_generic_secret" "administrator_creds" {
 }
 
 data "azurerm_monitor_action_group" "platformDev" {
-  name = var.action_group_name
+  count               = var.action_group_enable_data_lookup ? 1 : 0
+  name                = var.action_group_name
   resource_group_name = var.actiongroup_resource_group_name
 }
 
 data "azurerm_log_analytics_workspace" "log_analytics_workspace" {
+  count               = var.log_analytics_workspace_enable_data_lookup ? 1 : 0
   name                = var.log_analytics_workspace_name
   resource_group_name = var.log_analytics_workspace_resource_group_name
 }
@@ -39,6 +41,8 @@ locals {
   replica_single_server_name = join(", ", azurerm_postgresql_server.server_replica.*.name)
   replica_single_server_id   = join(", ", azurerm_postgresql_server.server_replica.*.id)
   primary_server_fqdn        = var.single_server ? join(", ", azurerm_postgresql_server.server.*.fqdn) : join(", ", azurerm_postgresql_flexible_server.flexible_server.*.fqdn)
+  sku_name                   = var.single_server ? join(", ", azurerm_postgresql_server.server.*.sku_name) : join(", ", azurerm_postgresql_flexible_server.flexible_server.*.sku_name)
+  storage_mb                 = var.single_server ? join(", ", azurerm_postgresql_server.server.*.storage_mb) : join(", ", azurerm_postgresql_flexible_server.flexible_server.*.storage_mb)
 }
 
 # resource "azurerm_postgresql_database" "dbs" {
