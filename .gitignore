@@ -7,6 +7,9 @@ terraform.tfvars
 *.tfstate
 *.tfstate.backup
 
+# Lock files - Lock hcl files should not be on Root module
+**/.terraform.lock.hcl
+
 # Go vendor directory
 vendor/
 
