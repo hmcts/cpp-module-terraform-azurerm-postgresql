@@ -25,7 +25,7 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
 
   tags = var.tags
   lifecycle {
-    ignore_changes = [tags["created_by"], tags["created_time"]]
+    ignore_changes = [tags["created_by"], tags["created_time"], tags["timestamp"]]
   }
 }
 
