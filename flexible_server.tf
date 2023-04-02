@@ -16,6 +16,10 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
   delegated_subnet_id = var.delegated_subnet_id
   private_dns_zone_id = var.private_dns_zone_id
 
+  create_mode         = var.create_mode
+  source_server_id    = var.source_server_id
+  point_in_time_restore_time_in_utc = var.point_in_time_restore_time_in_utc
+
   dynamic "high_availability" {
     for_each = var.create_replica_instance ? [1] : []
     content {

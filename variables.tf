@@ -18,6 +18,24 @@ variable "server_name" {
   type        = string
 }
 
+variable "create_mode" {
+  description = "The creation mode which can be used to restore or replicate existing servers"
+  type        = string
+  default     = "Default"
+}
+
+variable "source_server_id" {
+  description = "The resource ID of the source PostgreSQL Flexible Server to be restored"
+  type        = string
+  default     = null
+}
+
+variable "point_in_time_restore_time_in_utc" {
+  description = "The point in time to restore from source_server_id"
+  type        = string
+  default     = null
+}
+
 variable "sku_name" {
   description = "Specifies the SKU Name for this PostgreSQL Server. The name of the SKU, follows the tier + family + cores pattern (e.g. B_Gen4_1, GP_Gen5_8)."
   type        = string
