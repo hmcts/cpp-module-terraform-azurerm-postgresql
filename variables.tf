@@ -21,7 +21,7 @@ variable "server_name" {
 variable "create_mode" {
   description = "The creation mode which can be used to restore or replicate existing servers"
   type        = string
-  default     = "Default"
+  default     = null
 }
 
 variable "source_server_id" {
