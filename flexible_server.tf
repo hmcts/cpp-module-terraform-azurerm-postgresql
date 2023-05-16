@@ -16,8 +16,8 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
   delegated_subnet_id = var.delegated_subnet_id
   private_dns_zone_id = var.private_dns_zone_id
 
-  create_mode         = var.create_mode
-  source_server_id    = var.source_server_id
+  create_mode                       = var.create_mode
+  source_server_id                  = var.source_server_id
   point_in_time_restore_time_in_utc = var.point_in_time_restore_time_in_utc
 
   dynamic "high_availability" {
@@ -62,13 +62,16 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
   target_resource_id         = local.primary_server_id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.0.id
 
-  log {
-    category = "PostgreSQLLogs"
-    enabled  = var.log_to_azure_monitor_flexible.postgresql_logs.enabled
+  dynamic "log" {
+    for_each = var.log_to_azure_monitor_flexible.logs
+    content {
+      category = log.key
+      enabled  = log.value["enabled"]
 
-    retention_policy {
-      enabled = var.log_to_azure_monitor_flexible.postgresql_logs.retention_enabled
-      days    = var.log_to_azure_monitor_flexible.postgresql_logs.retention_days
+      retention_policy {
+        enabled = log.value["retention_enabled"]
+        days    = log.value["retention_days"]
+      }
     }
   }
 

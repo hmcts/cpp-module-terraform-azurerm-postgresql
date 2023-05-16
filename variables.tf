@@ -335,10 +335,37 @@ variable "log_to_azure_monitor_flexible" {
   description = "Logging to Azure Monitor Settings for Flexible Instance"
   type = object({
     enable = bool
-    postgresql_logs = object({
-      enabled           = bool
-      retention_enabled = bool
-      retention_days    = number
+    logs = object({
+      PostgreSQLLogs = object({
+        enabled           = bool
+        retention_enabled = bool
+        retention_days    = number
+      }),
+      PostgreSQLFlexDatabaseXacts = object({
+        enabled           = bool
+        retention_enabled = bool
+        retention_days    = number
+      }),
+      PostgreSQLFlexQueryStoreRuntime = object({
+        enabled           = bool
+        retention_enabled = bool
+        retention_days    = number
+      }),
+      PostgreSQLFlexQueryStoreWaitStats = object({
+        enabled           = bool
+        retention_enabled = bool
+        retention_days    = number
+      }),
+      PostgreSQLFlexSessions = object({
+        enabled           = bool
+        retention_enabled = bool
+        retention_days    = number
+      }),
+      PostgreSQLFlexTableStats = object({
+        enabled           = bool
+        retention_enabled = bool
+        retention_days    = number
+      }),
     })
     all_metrics = object({
       enabled           = bool
@@ -348,15 +375,42 @@ variable "log_to_azure_monitor_flexible" {
   })
   default = {
     enable = false
-    postgresql_logs = {
-      enabled           = true
-      retention_enabled = true
-      retention_days    = 7
+    logs = {
+      PostgreSQLLogs = {
+        enabled           = false
+        retention_enabled = false
+        retention_days    = 0
+      }
+      PostgreSQLFlexDatabaseXacts = {
+        enabled           = false
+        retention_enabled = false
+        retention_days    = 0
+      }
+      PostgreSQLFlexQueryStoreRuntime = {
+        enabled           = false
+        retention_enabled = false
+        retention_days    = 0
+      }
+      PostgreSQLFlexQueryStoreWaitStats = {
+        enabled           = false
+        retention_enabled = false
+        retention_days    = 0
+      }
+      PostgreSQLFlexSessions = {
+        enabled           = false
+        retention_enabled = false
+        retention_days    = 0
+      }
+      PostgreSQLFlexTableStats = {
+        enabled           = false
+        retention_enabled = false
+        retention_days    = 0
+      }
     }
     all_metrics = {
       enabled           = false
-      retention_enabled = true
-      retention_days    = 7
+      retention_enabled = false
+      retention_days    = 0
     }
   }
 }
