@@ -192,9 +192,9 @@ variable "replica_instance_location" {
 }
 
 variable "set_zone" {
-  description = "Set HA active zone [1,2] - default is 1"
+  description = "Set HA standby zone [1,2] - default is 2"
   type        = string
-  default     = "1"
+  default     = "2"
 }
 
 variable "enable_monitoring" {
