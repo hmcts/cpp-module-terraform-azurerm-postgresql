@@ -20,12 +20,13 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
   source_server_id                  = var.source_server_id
   point_in_time_restore_time_in_utc = var.point_in_time_restore_time_in_utc
 
-  zone = var.set_zone
+  # zone = var.set_zone
 
   dynamic "high_availability" {
     for_each = var.create_replica_instance ? [1] : []
     content {
       mode = "ZoneRedundant"
+      standby_availability_zone = var.set_zone
     }
   }
 
