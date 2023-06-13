@@ -191,6 +191,12 @@ variable "replica_instance_location" {
   default     = ""
 }
 
+variable "set_zone" {
+  description = "Set HA active zone [1,2] - default is 1"
+  type        = string
+  default     = "1"
+}
+
 variable "enable_monitoring" {
   description = "Enable monitoring for postgres instance. Accepted values true or false"
   type        = bool
