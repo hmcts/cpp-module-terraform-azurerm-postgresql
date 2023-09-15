@@ -482,3 +482,9 @@ variable "alerts_config_flexible" {
     }
   }
 }
+
+variable "pgbouncer_config" {
+  description = "A map with PgBouncer configurations to enable."
+  type        = map(string)
+  default     = {}
+}

@@ -49,6 +49,14 @@ resource "azurerm_postgresql_flexible_server_configuration" "db_configs" {
   value = each.value
 }
 
+resource "azurerm_postgresql_flexible_server_configuration" "pgbouncer" {
+  for_each  = var.single_server ? {} : var.pgbouncer_config
+  server_id = local.primary_server_id
+
+  name  = each.key
+  value = each.value
+}
+
 resource "azurerm_postgresql_flexible_server_configuration" "db_config_extensions" {
   count     = var.extensions ? 1 : 0
   name      = "azure.extensions"
