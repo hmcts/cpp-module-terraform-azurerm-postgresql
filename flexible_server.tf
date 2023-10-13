@@ -7,7 +7,7 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
   sku_name = var.sku_name
 
   storage_mb            = var.storage_mb
-  auto_grow_enabled     = var.auto_grow_enabled
+  auto_grow_enabled     = var.flexible_auto_grow_enabled
   backup_retention_days = var.backup_retention_days
 
   administrator_login    = data.vault_generic_secret.administrator_creds.data.administrator_login
