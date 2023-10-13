@@ -48,20 +48,6 @@ log_analytics_workspace_name = "LA-MDV-INT-WS"
 
 log_analytics_workspace_resource_group_name = "RG-MDV-INT-01"
 
-log_to_azure_monitor_flexible = {
-  enable = false
-  postgresql_logs = {
-    enabled           = false
-    retention_enabled = false
-    retention_days    = 7
-  }
-  all_metrics = {
-    enabled           = false
-    retention_enabled = false
-    retention_days    = 0
-  }
-}
-
 enable_monitoring = false
 
 action_group_enable_data_lookup            = false

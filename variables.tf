@@ -54,6 +54,12 @@ variable "auto_grow_enabled" {
   default     = true
 }
 
+variable "flexible_auto_grow_enabled" {
+  description = "Enable/Disable auto-growing of the storage."
+  type        = bool
+  default     = false
+}
+
 variable "backup_retention_days" {
   description = "Backup retention days for the server, supported values are between 7 and 35 days."
   type        = number
