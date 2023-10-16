@@ -203,6 +203,24 @@ variable "enable_monitoring" {
   default     = false
 }
 
+variable "enable_azure_keyvault" {
+  description = "Enable writing Hashicorp Secret to AZ KV Secret"
+  type        = bool
+  default     = false
+}
+
+variable "keyvault_name" {
+  description = "Name of Azure Keyvault"
+  type        = string
+  default     = ""
+}
+
+variable "keyvault_resource_group_name" {
+  description = "Name of Azure Keyvault RG"
+  type        = string
+  default     = ""
+}
+
 variable "log_analytics_workspace_enable_data_lookup" {
   description = "Disable for testing"
   type        = bool
