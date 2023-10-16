@@ -7,6 +7,7 @@ data "azurerm_key_vault" "keyvault" {
 }
 
 resource "azurerm_key_vault_secret" "postgresql" {
+  count        = var.enable_azure_keyvault ? 1 : 0
   name         = var.administrator_creds_azkv_secret_name
   value        = data.vault_generic_secret.administrator_creds.data["administrator_password"]
   key_vault_id = data.azurerm_key_vault.keyvault.id
