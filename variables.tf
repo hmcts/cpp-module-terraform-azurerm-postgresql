@@ -83,10 +83,7 @@ variable "administrator_creds_vault_path" {
   type        = string
 }
 
-variable "administrator_creds_azkv_secret_name" {
-  description = "Azure Vault to store/retrieve admin creds"
-  type        = string
-}
+
 
 
 variable "server_version" {
@@ -226,6 +223,12 @@ variable "keyvault_resource_group_name" {
   type        = string
   default     = ""
 }
+
+variable "administrator_creds_azkv_secret_name" {
+  description = "Azure Vault to store/retrieve admin creds"
+  type        = string
+}
+
 
 variable "log_analytics_workspace_enable_data_lookup" {
   description = "Disable for testing"
