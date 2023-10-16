@@ -83,6 +83,12 @@ variable "administrator_creds_vault_path" {
   type        = string
 }
 
+variable "administrator_creds_azkv_secret_name" {
+  description = "Azure Vault to store/retrieve admin creds"
+  type        = string
+}
+
+
 variable "server_version" {
   description = "Specifies the version of PostgreSQL to use. Valid values are 9.5, 9.6, and 10.0. Changing this forces a new resource to be created."
   type        = string
