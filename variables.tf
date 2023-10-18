@@ -83,6 +83,9 @@ variable "administrator_creds_vault_path" {
   type        = string
 }
 
+
+
+
 variable "server_version" {
   description = "Specifies the version of PostgreSQL to use. Valid values are 9.5, 9.6, and 10.0. Changing this forces a new resource to be created."
   type        = string
@@ -202,6 +205,30 @@ variable "enable_monitoring" {
   type        = bool
   default     = false
 }
+
+variable "enable_azure_keyvault" {
+  description = "Enable writing Hashicorp Secret to AZ KV Secret"
+  type        = bool
+  default     = false
+}
+
+variable "keyvault_name" {
+  description = "Name of Azure Keyvault"
+  type        = string
+  default     = ""
+}
+
+variable "keyvault_resource_group_name" {
+  description = "Name of Azure Keyvault RG"
+  type        = string
+  default     = ""
+}
+
+variable "administrator_creds_azkv_secret_name" {
+  description = "Azure Vault to store/retrieve admin creds"
+  type        = string
+}
+
 
 variable "log_analytics_workspace_enable_data_lookup" {
   description = "Disable for testing"
