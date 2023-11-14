@@ -42,6 +42,7 @@ module "postgresql" {
   backup_retention_days                       = each.value.backup_retention_days
   geo_redundant_backup_enabled                = each.value.geo_redundant_backup_enabled
   administrator_login                         = "pgsqladmin"
+  administrator_creds_azkv_secret_name        = "test"
   administrator_creds_vault_path              = "/secret/mgmt/${each.value.server_name}-creds"
   server_version                              = each.value.server_version
   postgresql_configurations                   = each.value.postgresql_configurations

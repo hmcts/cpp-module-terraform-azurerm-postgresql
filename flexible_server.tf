@@ -68,21 +68,12 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
     content {
       category = log.key
       enabled  = log.value["enabled"]
-
-      retention_policy {
-        enabled = log.value["retention_enabled"]
-        days    = log.value["retention_days"]
-      }
     }
   }
 
   metric {
     category = "AllMetrics"
     enabled  = var.log_to_azure_monitor_flexible.all_metrics.enabled
-    retention_policy {
-      enabled = var.log_to_azure_monitor_flexible.all_metrics.retention_enabled
-      days    = var.log_to_azure_monitor_flexible.all_metrics.retention_days
-    }
   }
 }
 
