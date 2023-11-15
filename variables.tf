@@ -269,47 +269,31 @@ variable "log_to_azure_monitor_single_primary" {
   type = object({
     enable = bool
     postgresql_logs = object({
-      enabled           = bool
-      retention_enabled = bool
-      retention_days    = number
+      enabled = bool
     })
     querystore_runtime_statistics = object({
-      enabled           = bool
-      retention_enabled = bool
-      retention_days    = number
+      enabled = bool
     })
     querystore_wait_statistics = object({
-      enabled           = bool
-      retention_enabled = bool
-      retention_days    = number
+      enabled = bool
     })
     all_metrics = object({
-      enabled           = bool
-      retention_enabled = bool
-      retention_days    = number
+      enabled = bool
     })
   })
   default = {
     enable = false
     postgresql_logs = {
-      enabled           = true
-      retention_enabled = true
-      retention_days    = 7
+      enabled = true
     }
     querystore_runtime_statistics = {
-      enabled           = true
-      retention_enabled = true
-      retention_days    = 7
+      enabled = true
     }
     querystore_wait_statistics = {
-      enabled           = true
-      retention_enabled = true
-      retention_days    = 7
+      enabled = true
     }
     all_metrics = {
-      enabled           = false
-      retention_enabled = true
-      retention_days    = 7
+      enabled = false
     }
   }
 }
@@ -319,47 +303,31 @@ variable "log_to_azure_monitor_single_replica" {
   type = object({
     enable = bool
     postgresql_logs = object({
-      enabled           = bool
-      retention_enabled = bool
-      retention_days    = number
+      enabled = bool
     })
     querystore_runtime_statistics = object({
-      enabled           = bool
-      retention_enabled = bool
-      retention_days    = number
+      enabled = bool
     })
     querystore_wait_statistics = object({
-      enabled           = bool
-      retention_enabled = bool
-      retention_days    = number
+      enabled = bool
     })
     all_metrics = object({
-      enabled           = bool
-      retention_enabled = bool
-      retention_days    = number
+      enabled = bool
     })
   })
   default = {
     enable = false
     postgresql_logs = {
-      enabled           = true
-      retention_enabled = true
-      retention_days    = 7
+      enabled = true
     }
     querystore_runtime_statistics = {
-      enabled           = true
-      retention_enabled = true
-      retention_days    = 7
+      enabled = true
     }
     querystore_wait_statistics = {
-      enabled           = true
-      retention_enabled = true
-      retention_days    = 7
+      enabled = true
     }
     all_metrics = {
-      enabled           = false
-      retention_enabled = true
-      retention_days    = 7
+      enabled = false
     }
   }
 }

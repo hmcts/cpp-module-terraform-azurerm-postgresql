@@ -97,40 +97,21 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_prima
   log {
     category = "PostgreSQLLogs"
     enabled  = var.log_to_azure_monitor_single_primary.postgresql_logs.enabled
-
-    retention_policy {
-      enabled = var.log_to_azure_monitor_single_primary.postgresql_logs.retention_enabled
-      days    = var.log_to_azure_monitor_single_primary.postgresql_logs.retention_days
-    }
   }
 
   log {
     category = "QueryStoreRuntimeStatistics"
     enabled  = var.log_to_azure_monitor_single_primary.querystore_runtime_statistics.enabled
-
-    retention_policy {
-      enabled = var.log_to_azure_monitor_single_primary.querystore_runtime_statistics.retention_enabled
-      days    = var.log_to_azure_monitor_single_primary.querystore_runtime_statistics.retention_days
-    }
   }
 
   log {
     category = "QueryStoreWaitStatistics"
     enabled  = var.log_to_azure_monitor_single_primary.querystore_wait_statistics.enabled
-
-    retention_policy {
-      enabled = var.log_to_azure_monitor_single_primary.querystore_wait_statistics.retention_enabled
-      days    = var.log_to_azure_monitor_single_primary.querystore_wait_statistics.retention_days
-    }
   }
 
   metric {
     category = "AllMetrics"
     enabled  = var.log_to_azure_monitor_single_primary.all_metrics.enabled
-    retention_policy {
-      enabled = var.log_to_azure_monitor_single_primary.all_metrics.retention_enabled
-      days    = var.log_to_azure_monitor_single_primary.all_metrics.retention_days
-    }
   }
 }
 
@@ -143,40 +124,21 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_repli
   log {
     category = "PostgreSQLLogs"
     enabled  = var.log_to_azure_monitor_single_replica.postgresql_logs.enabled
-
-    retention_policy {
-      enabled = var.log_to_azure_monitor_single_replica.postgresql_logs.retention_enabled
-      days    = var.log_to_azure_monitor_single_replica.postgresql_logs.retention_days
-    }
   }
 
   log {
     category = "QueryStoreRuntimeStatistics"
     enabled  = var.log_to_azure_monitor_single_replica.querystore_runtime_statistics.enabled
-
-    retention_policy {
-      enabled = var.log_to_azure_monitor_single_replica.querystore_runtime_statistics.retention_enabled
-      days    = var.log_to_azure_monitor_single_replica.querystore_runtime_statistics.retention_days
-    }
   }
 
   log {
     category = "QueryStoreWaitStatistics"
     enabled  = var.log_to_azure_monitor_single_replica.querystore_wait_statistics.enabled
-
-    retention_policy {
-      enabled = var.log_to_azure_monitor_single_replica.querystore_wait_statistics.retention_enabled
-      days    = var.log_to_azure_monitor_single_replica.querystore_wait_statistics.retention_days
-    }
   }
 
   metric {
     category = "AllMetrics"
     enabled  = var.log_to_azure_monitor_single_replica.all_metrics.enabled
-    retention_policy {
-      enabled = var.log_to_azure_monitor_single_replica.all_metrics.retention_enabled
-      days    = var.log_to_azure_monitor_single_replica.all_metrics.retention_days
-    }
   }
 }
 
