@@ -200,3 +200,10 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_storage_utilization_f
     action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   }
 }
+
+resource "azurerm_management_lock" "resource_lock" {
+  name       = "lock_${local.primary_server_name}"
+  scope      = azurerm_postgresql_flexible_server.flexible_server.0.id
+  lock_level = "CanNotDelete"
+  notes      = "Locked to prevent accidental deletion"
+}
