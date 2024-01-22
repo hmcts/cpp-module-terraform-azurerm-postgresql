@@ -182,6 +182,12 @@ variable "postgresql_configurations" {
   default     = {}
 }
 
+variable "pgbouncer_configurations" {
+  description = "A map with PgBouncer configurations to enable."
+  type        = map(string)
+  default     = {}
+}
+
 variable "extensions" {
   description = "This is value for azure extension under server configuration"
   type        = bool
