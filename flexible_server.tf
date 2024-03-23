@@ -72,7 +72,7 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
   target_resource_id         = local.primary_server_id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.0.id
 
-  dynamic "log" {
+  dynamic "enabled_log" {
     for_each = var.log_to_azure_monitor_flexible.logs
     content {
       category = log.key
