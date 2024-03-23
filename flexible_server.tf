@@ -76,7 +76,6 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
     for_each = var.log_to_azure_monitor_flexible.logs
     content {
       category = log.key
-      enabled  = log.value["enabled"]
     }
   }
 
