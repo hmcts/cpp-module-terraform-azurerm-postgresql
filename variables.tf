@@ -477,3 +477,21 @@ variable "enable_bloat_monitoring" {
     threshold               = 15
   }
 }
+
+variable "action_group" {
+  type = object({
+    create        = bool
+    name          = string
+    email_address = string
+  })
+  default = {
+    create        = false
+    name          = null
+    email_address = null
+  }
+}
+
+variable "environment" {
+  type        = string
+  description = "Environment name"
+}

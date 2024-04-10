@@ -67,6 +67,7 @@ module "postgresql" {
   alerts_config_flexible                      = var.alerts_config_flexible
   action_group_enable_data_lookup             = var.action_group_enable_data_lookup
   log_analytics_workspace_enable_data_lookup  = var.log_analytics_workspace_enable_data_lookup
+  environment                                 = var.environment
 
   depends_on = [
     azurerm_resource_group.test,
