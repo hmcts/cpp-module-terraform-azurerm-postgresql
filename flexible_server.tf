@@ -242,8 +242,11 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_bloat_percentage" {
     }
   }
   window_size = "PT30M"
-  action {
-    action_group_id = azurerm_monitor_action_group.ag_bloat.0.id
+  dynamic "action" {
+    for_each = var.action_group.create ? [1] : []
+    content {
+      action_group_id = azurerm_monitor_action_group.ag_bloat[0].id
+    }
   }
 }
 
