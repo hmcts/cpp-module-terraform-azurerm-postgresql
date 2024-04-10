@@ -210,6 +210,31 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_storage_utilization_f
   }
 }
 
+resource "azurerm_monitor_metric_alert" "az_postgres_alert_bloat_percentage" {
+  count               = var.enable_bloat_monitoring.enable_bloat_monitoring && !var.single_server ? 1 : 0
+  name                = "postgres_bloat_percentage_${local.primary_server_name}"
+  resource_group_name = var.resource_group_name
+  scopes              = [local.primary_server_id]
+  description         = "Bloat percentage is greater"
+  severity            = 2
+
+  criteria {
+    metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
+    metric_name      = "bloat_percent"
+    aggregation      = var.enable_bloat_monitoring.aggregation
+    operator         = var.enable_bloat_monitoring.operator
+    threshold        = var.enable_bloat_monitoring.threshold
+    dimension {
+      name     = "Database Name"
+      operator = "Exclude"
+      values   = ["azure_maintenance", "azure_sys", "postgres"]
+    }
+  }
+  #  action {
+  #    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
+  #  }
+}
+
 resource "azurerm_management_lock" "resource_lock" {
   name       = "lock_${local.primary_server_name}"
   scope      = azurerm_postgresql_flexible_server.flexible_server.0.id

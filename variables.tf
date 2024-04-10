@@ -461,3 +461,19 @@ variable "alerts_config_flexible" {
     }
   }
 }
+
+variable "enable_bloat_monitoring" {
+  description = "Enable bloat monitoring for postgres instance. Accepted values true or false"
+  type = object({
+    enable_bloat_monitoring = bool
+    aggregation             = string
+    operator                = string
+    threshold               = number
+  })
+  default = {
+    enable_bloat_monitoring = false
+    aggregation             = "Maximum"
+    operator                = "GreaterThan"
+    threshold               = 15
+  }
+}
