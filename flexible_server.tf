@@ -210,17 +210,6 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_storage_utilization_f
   }
 }
 
-resource "azurerm_monitor_action_group" "ag_bloat" {
-  count               = var.action_group.create ? 1 : 0
-  name                = "bloatPercentNotify_${var.environment}"
-  resource_group_name = var.resource_group_name
-  short_name          = var.action_group.name
-  email_receiver {
-    name          = var.action_group.name
-    email_address = var.action_group.email_address
-  }
-}
-
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_bloat_percentage" {
   count               = var.enable_bloat_monitoring.enable_bloat_monitoring && !var.single_server ? 1 : 0
   name                = "postgres_bloat_percentage_${local.primary_server_name}"
@@ -242,11 +231,8 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_bloat_percentage" {
     }
   }
   window_size = "PT30M"
-  dynamic "action" {
-    for_each = var.action_group.create ? [1] : []
-    content {
-      action_group_id = azurerm_monitor_action_group.ag_bloat[0].id
-    }
+  action {
+    action_group_id = var.action_group_id
   }
 }
 

@@ -478,17 +478,10 @@ variable "enable_bloat_monitoring" {
   }
 }
 
-variable "action_group" {
-  type = object({
-    create        = bool
-    name          = string
-    email_address = string
-  })
-  default = {
-    create        = false
-    name          = null
-    email_address = null
-  }
+variable "action_group_id" {
+  description = "action group id for alerts"
+  type        = string
+  default     = null
 }
 
 variable "environment" {
