@@ -225,7 +225,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_bloat_percentage" {
     operator         = var.enable_bloat_monitoring.operator
     threshold        = var.enable_bloat_monitoring.threshold
     dimension {
-      name     = "Database Name"
+      name     = "DatabaseName"
       operator = "Exclude"
       values   = ["azure_maintenance", "azure_sys", "postgres"]
     }
