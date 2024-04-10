@@ -230,6 +230,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_bloat_percentage" {
       values   = ["azure_maintenance", "azure_sys", "postgres"]
     }
   }
+  window_size = "PT30M"
   #  action {
   #    action_group_id = data.azurerm_monitor_action_group.platformDev.0.id
   #  }
