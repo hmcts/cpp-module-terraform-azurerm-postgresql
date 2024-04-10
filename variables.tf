@@ -483,8 +483,3 @@ variable "action_group_id" {
   type        = string
   default     = null
 }
-
-variable "environment" {
-  type        = string
-  description = "Environment name"
-}
