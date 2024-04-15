@@ -469,12 +469,18 @@ variable "enable_bloat_monitoring" {
     aggregation             = string
     operator                = string
     threshold               = number
+    frequency               = string
+    window_size             = string
+    dbs_to_exclude          = list(string)
   })
   default = {
     enable_bloat_monitoring = false
     aggregation             = "Maximum"
     operator                = "GreaterThan"
-    threshold               = 15
+    threshold               = 10
+    frequency               = "PT1H"
+    window_size             = "P1D"
+    dbs_to_exclude          = ["azure_maintenance", "azure_sys", "postgres"]
   }
 }
 
