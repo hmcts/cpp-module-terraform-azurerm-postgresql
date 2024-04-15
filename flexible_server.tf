@@ -230,7 +230,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_bloat_percentage" {
       values   = var.enable_bloat_monitoring.dbs_to_exclude
     }
   }
-  frequency = var.enable_bloat_monitoring.frequency
+  frequency   = var.enable_bloat_monitoring.frequency
   window_size = var.enable_bloat_monitoring.window_size
   action {
     action_group_id = var.action_group_id
