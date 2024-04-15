@@ -227,10 +227,11 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_bloat_percentage" {
     dimension {
       name     = "DatabaseName"
       operator = "Exclude"
-      values   = ["azure_maintenance", "azure_sys", "postgres"]
+      values   = var.enable_bloat_monitoring.dbs_to_exclude
     }
   }
-  window_size = "PT30M"
+  frequency = var.enable_bloat_monitoring.frequency
+  window_size = var.enable_bloat_monitoring.window_size
   action {
     action_group_id = var.action_group_id
   }
