@@ -469,8 +469,8 @@ variable "enable_bloat_monitoring" {
     aggregation             = string
     operator                = string
     threshold               = number
-    frequency               = optional(string)
-    window_size             = optional(string)
+    frequency               = string
+    window_size             = string
     dbs_to_exclude          = list(string)
   })
   default = {
