@@ -1,6 +1,7 @@
 resource "azurerm_postgresql_flexible_server" "flexible_server" {
   count               = var.single_server ? 0 : 1
   name                = var.server_name
+  storage_tier        = var.storage_tier
   location            = var.location
   resource_group_name = var.resource_group_name
 

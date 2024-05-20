@@ -18,6 +18,11 @@ variable "server_name" {
   type        = string
 }
 
+variable "storage_tier" {
+  description = "Specifies the name of the Storage Tier. Changing this forces a new resource to be created."
+  type        = string
+}
+
 variable "create_mode" {
   description = "The creation mode which can be used to restore or replicate existing servers"
   type        = string
