@@ -21,6 +21,7 @@ variable "server_name" {
 variable "storage_tier" {
   description = "Specifies the name of the Storage Tier. Changing this forces a new resource to be created."
   type        = string
+  default     = "P15"
 }
 
 variable "create_mode" {
