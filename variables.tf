@@ -48,6 +48,11 @@ variable "storage_mb" {
   default     = 102400
 }
 
+variable "storage_tier" {
+  description = "Set disk Performance tier (possible values depend on storage_mb set)."
+  type        = string
+}
+
 variable "auto_grow_enabled" {
   description = "Enable/Disable auto-growing of the storage."
   type        = bool
