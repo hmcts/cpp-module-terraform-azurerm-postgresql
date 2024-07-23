@@ -111,6 +111,7 @@ variable "psql_instances" {
     sku_name                     = string
     single_server                = bool
     storage_mb                   = number
+    storage_tier                 = string
     backup_retention_days        = number
     geo_redundant_backup_enabled = bool
     server_version               = string

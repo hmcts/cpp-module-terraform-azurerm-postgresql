@@ -39,6 +39,7 @@ module "postgresql" {
   server_name                                 = each.value.server_name
   sku_name                                    = each.value.sku_name
   storage_mb                                  = each.value.storage_mb
+  storage_tier                                = each.value.storage_tier
   backup_retention_days                       = each.value.backup_retention_days
   geo_redundant_backup_enabled                = each.value.geo_redundant_backup_enabled
   administrator_login                         = "pgsqladmin"
