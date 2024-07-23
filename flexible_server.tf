@@ -15,8 +15,9 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
   administrator_password = data.vault_generic_secret.administrator_creds.data.administrator_password
   version                = var.server_version
 
-  delegated_subnet_id = var.delegated_subnet_id
-  private_dns_zone_id = var.private_dns_zone_id
+  delegated_subnet_id           = var.delegated_subnet_id
+  private_dns_zone_id           = var.private_dns_zone_id
+  public_network_access_enabled = var.public_network_access_enabled
 
   create_mode                       = var.create_mode
   source_server_id                  = var.source_server_id
@@ -239,6 +240,7 @@ resource "azurerm_monitor_metric_alert" "az_postgres_alert_bloat_percentage" {
 }
 
 resource "azurerm_management_lock" "resource_lock" {
+  count      = var.create_lock ? 1 : 0
   name       = "lock_${local.primary_server_name}"
   scope      = azurerm_postgresql_flexible_server.flexible_server.0.id
   lock_level = "CanNotDelete"

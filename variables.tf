@@ -495,3 +495,9 @@ variable "action_group_id" {
   type        = string
   default     = null
 }
+
+variable "create_lock" {
+  description = "Set to true to create the lock, false to skip"
+  type        = bool
+  default     = true
+}
