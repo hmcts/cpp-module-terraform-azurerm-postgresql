@@ -45,7 +45,13 @@ variable "sku_name" {
 variable "storage_mb" {
   description = "Max storage allowed for a server. Possible values are between 5120 MB(5GB) and 1048576 MB(1TB) for the Basic SKU and between 5120 MB(5GB) and 4194304 MB(4TB) for General Purpose/Memory Optimized SKUs."
   type        = number
-  default     = 102400
+  default     = null
+}
+
+variable "storage_tier" {
+  description = "Set disk Performance tier (possible values depend on storage_mb set)."
+  type        = string
+  default     = null
 }
 
 variable "auto_grow_enabled" {
