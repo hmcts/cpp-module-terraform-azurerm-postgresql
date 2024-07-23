@@ -58,6 +58,7 @@ psql_instances = [
     server_name                  = "psf-lab-ccm01-hearing"
     sku_name                     = "B_Standard_B2s"
     storage_mb                   = 32768
+    storage_tier                 = "P4"
     backup_retention_days        = 30
     geo_redundant_backup_enabled = null // Not required for flexible server
     server_version               = "11"
