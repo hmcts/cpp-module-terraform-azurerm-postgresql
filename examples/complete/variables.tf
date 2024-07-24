@@ -111,6 +111,7 @@ variable "psql_instances" {
     sku_name                     = string
     single_server                = bool
     storage_mb                   = number
+    storage_tier                 = string
     backup_retention_days        = number
     geo_redundant_backup_enabled = bool
     server_version               = string
@@ -370,4 +371,10 @@ variable "action_group_enable_data_lookup" {
   description = "Disable for testing"
   type        = bool
   default     = true
+}
+
+variable "create_lock" {
+  description = "Set to true to create the lock, false to skip"
+  type        = bool
+  default     = false
 }

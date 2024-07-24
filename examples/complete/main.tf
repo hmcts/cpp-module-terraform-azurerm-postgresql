@@ -39,6 +39,7 @@ module "postgresql" {
   server_name                                 = each.value.server_name
   sku_name                                    = each.value.sku_name
   storage_mb                                  = each.value.storage_mb
+  storage_tier                                = each.value.storage_tier
   backup_retention_days                       = each.value.backup_retention_days
   geo_redundant_backup_enabled                = each.value.geo_redundant_backup_enabled
   administrator_login                         = "pgsqladmin"
@@ -51,7 +52,7 @@ module "postgresql" {
   delegated_subnet_id                         = var.subnet_config.enable_data_lookup ? data.azurerm_subnet.delegated_subnet_id.0.id : null
   private_dns_zone_id                         = azurerm_private_dns_zone.dns.id
   ssl_enforcement_enabled                     = true
-  public_network_access_enabled               = true
+  public_network_access_enabled               = false
   create_replica_instance                     = each.value.create_replica_instance
   firewall_rules                              = each.value.firewall_rules
   replica_instance_location                   = var.replica_instance_location
@@ -67,6 +68,7 @@ module "postgresql" {
   alerts_config_flexible                      = var.alerts_config_flexible
   action_group_enable_data_lookup             = var.action_group_enable_data_lookup
   log_analytics_workspace_enable_data_lookup  = var.log_analytics_workspace_enable_data_lookup
+  create_lock                                 = var.create_lock
 
   depends_on = [
     azurerm_resource_group.test,
