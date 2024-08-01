@@ -63,7 +63,7 @@ variable "auto_grow_enabled" {
 variable "flexible_auto_grow_enabled" {
   description = "Enable/Disable auto-growing of the storage."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "backup_retention_days" {
