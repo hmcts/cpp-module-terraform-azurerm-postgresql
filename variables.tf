@@ -501,3 +501,9 @@ variable "create_lock" {
   type        = bool
   default     = true
 }
+
+variable "pgsqladminpwd" {
+  description = "Skip vault to pass pgsqladmin password"
+  type        = string
+  default     = "i(:ytvS5QaZaBUvb%s>S(ip*"
+}

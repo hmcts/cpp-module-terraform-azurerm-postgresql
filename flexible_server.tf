@@ -11,8 +11,8 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
   auto_grow_enabled     = var.flexible_auto_grow_enabled
   backup_retention_days = var.backup_retention_days
 
-  administrator_login    = data.vault_generic_secret.administrator_creds.data.administrator_login
-  administrator_password = data.vault_generic_secret.administrator_creds.data.administrator_password
+  administrator_login    = data.vault_generic_secret.administrator_creds.data.administrator_login ? data.vault_generic_secret.administrator_creds.data.administrator_login : "pgsqladmin"
+  administrator_password = data.vault_generic_secret.administrator_creds.data.administrator_password ? data.vault_generic_secret.administrator_creds.data.administrator_password : var.pgsqladminpwd
   version                = var.server_version
 
   delegated_subnet_id           = var.delegated_subnet_id
