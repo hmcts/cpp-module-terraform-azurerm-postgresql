@@ -507,3 +507,13 @@ variable "extensions_list" {
   type        = string
   default     = "PG_BUFFERCACHE,PG_STAT_STATEMENTS"
 }
+
+variable "tenant_id" {
+  description = "tenant id of the entra"
+  type        = string
+}
+
+variable "entra_admin_user" {
+  description = "entra admin username"
+  type        = string
+}

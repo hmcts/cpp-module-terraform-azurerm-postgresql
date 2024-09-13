@@ -30,10 +30,25 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
     }
   }
 
+  authentication {
+    active_directory_auth_enabled = true
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    password_auth_enabled = true
+  }
+
   tags = var.tags
   lifecycle {
     ignore_changes = [tags["created_by"], tags["created_time"], zone, high_availability.0.standby_availability_zone]
   }
+}
+
+resource "azurerm_postgresql_flexible_server_active_directory_administrator" "example" {
+  server_name         = azurerm_postgresql_flexible_server.flexible_server.name
+  resource_group_name = var.resource_group_name
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  object_id           = data.azuread_service_principal.current.object_id
+  principal_name      = data.azuread_service_principal.current.display_name
+  principal_type      = "ServicePrincipal"
 }
 
 resource "azurerm_postgresql_flexible_server_firewall_rule" "firewall_rules" {
