@@ -43,7 +43,7 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
 }
 
 resource "azurerm_postgresql_flexible_server_active_directory_administrator" "example" {
-  server_name         = azurerm_postgresql_flexible_server.flexible_server.name
+  server_name         = azurerm_postgresql_flexible_server.flexible_server.0.name
   resource_group_name = var.resource_group_name
   tenant_id           = data.azurerm_client_config.current.tenant_id
   object_id           = data.azuread_service_principal.current.object_id
