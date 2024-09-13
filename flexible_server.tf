@@ -65,7 +65,7 @@ resource "azurerm_postgresql_flexible_server_configuration" "db_config_extension
   count     = var.extensions ? 1 : 0
   name      = "azure.extensions"
   server_id = local.primary_server_id
-  value     = "PG_BUFFERCACHE,PG_STAT_STATEMENTS"
+  value     = var.extensions_list
 }
 
 resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
