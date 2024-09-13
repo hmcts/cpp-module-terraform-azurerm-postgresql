@@ -501,3 +501,9 @@ variable "create_lock" {
   type        = bool
   default     = true
 }
+
+variable "extensions_list" {
+  description = "action group id for alerts"
+  type        = string
+  default     = "PG_BUFFERCACHE,PG_STAT_STATEMENTS"
+}
