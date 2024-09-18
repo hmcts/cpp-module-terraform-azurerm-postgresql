@@ -1,5 +1,7 @@
 environment = "test"
 
+entra_admin_user = "azure-cli-2017-10-31-16-36-34"
+
 tags = {
   domain      = "cpp.nonlive"
   platform    = "nlv"
