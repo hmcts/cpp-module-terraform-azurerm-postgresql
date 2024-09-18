@@ -1,6 +1,6 @@
 environment = "test"
 
-entra_admin_user = "azure-cli-2017-10-31-16-36-34"
+entra_admin_user = "ado_nonlive_service_principal_lab"
 
 tags = {
   domain      = "cpp.nonlive"
