@@ -36,14 +36,6 @@ private_dns_config = {
   resource_group_name = "RG-MDV-INT-01"
 }
 
-# vnet_rules = [
-#   {
-#     source_vnet_name                = "VN-LAB-INT-01"
-#     source_vnet_resource_group_name = "RG-LAB-INT-01"
-#     source_subnets                  = ["SN-LAB-INT-AKS-01", "SN-LAB-INT-AKS-02"]
-#   }
-# ]
-
 vnet_rules = []
 
 log_analytics_workspace_name = "LA-MDV-INT-WS"
