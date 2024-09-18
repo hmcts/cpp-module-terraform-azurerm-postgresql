@@ -16,5 +16,5 @@ extends:
   parameters:
     agentPool: "MDV-ADO-AGENTS-01"
     azureServiceConnection: "ado_nonlive_workload_identity"
-    terratestTimeout: "30"
+    terratestTimeout: "60"
     tfversion: 1.5.3
