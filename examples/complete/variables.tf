@@ -378,3 +378,8 @@ variable "create_lock" {
   type        = bool
   default     = false
 }
+
+variable "entra_admin_user" {
+  description = "entra admin username"
+  type        = string
+}

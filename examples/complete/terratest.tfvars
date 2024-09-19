@@ -1,5 +1,7 @@
 environment = "test"
 
+entra_admin_user = "ado_nonlive_service_principal_lab"
+
 tags = {
   domain      = "cpp.nonlive"
   platform    = "nlv"
@@ -33,14 +35,6 @@ private_dns_config = {
   name                = "privatelink.postgres.database.azure.com"
   resource_group_name = "RG-MDV-INT-01"
 }
-
-# vnet_rules = [
-#   {
-#     source_vnet_name                = "VN-LAB-INT-01"
-#     source_vnet_resource_group_name = "RG-LAB-INT-01"
-#     source_subnets                  = ["SN-LAB-INT-AKS-01", "SN-LAB-INT-AKS-02"]
-#   }
-# ]
 
 vnet_rules = []
 
