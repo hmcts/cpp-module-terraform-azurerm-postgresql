@@ -5,7 +5,7 @@ $do$
 BEGIN
   IF NOT EXISTS (
     SELECT FROM pg_catalog.pg_roles WHERE  rolname = '${group}') THEN
-      select * from pgaadauth_create_principal('${group}', false, false);
+      PERFORM * from pgaadauth_create_principal('${group}', false, false);
   END IF;
 END
 $do$;
