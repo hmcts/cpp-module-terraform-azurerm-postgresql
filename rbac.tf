@@ -11,7 +11,7 @@ resource "null_resource" "db_setup" {
   }
   provisioner "local-exec" {
     command = <<EOT
-      az login --service-principal -u 62dca24d-b574-4c40-bb88-fa8e192338fa -t e2995d11-9947-4e78-9de6-d44e0603518e
+      az login --service-principal -u ${data.azuread_service_principal.current.client_id} -t ${data.azurerm_client_config.current.tenant_id}
       export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
       psql -h ${azurerm_postgresql_flexible_server.flexible_server.0.name} -p 5432 -U ${var.entra_admin_user} -d postgres -f ${path.module}/roles/final_${each.value.file}
     EOT
