@@ -512,3 +512,16 @@ variable "entra_admin_user" {
   description = "entra admin username"
   type        = string
 }
+
+variable "entra_admin_pwd" {
+  description = "entra admin password"
+  type        = string
+}
+
+variable "rbac" {
+  description = "entra group role mappings"
+  type = map(object({
+    file   = string
+    groups = list(string)
+  }))
+}

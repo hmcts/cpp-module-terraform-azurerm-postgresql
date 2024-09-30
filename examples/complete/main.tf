@@ -70,6 +70,8 @@ module "postgresql" {
   log_analytics_workspace_enable_data_lookup  = var.log_analytics_workspace_enable_data_lookup
   create_lock                                 = var.create_lock
   entra_admin_user                            = var.entra_admin_user
+  entra_admin_pwd                             = "test"
+  rbac                                        = {}
 
   depends_on = [
     azurerm_resource_group.test,
