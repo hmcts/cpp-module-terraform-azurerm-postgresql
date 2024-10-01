@@ -1,9 +1,10 @@
 locals {
   // Assumes var.server_name has the form psf-{env}-ccm{id}-{project}
   // e.g. psf-prd-ccm01-progression
-  group_environment_name = upper(split("-", var.server_name)[1])
-  group_project          = upper(split("-", var.server_name)[3])
-  group_replica_id       = upper(trimprefix(split("-", var.server_name)[2]), "ccm")
+  server_name_array      = split("-", var.server_name)
+  group_environment_name = upper(local.server_name_array[1])
+  group_project          = upper(local.server_name_array[3])
+  group_replica_id       = upper(trimprefix(local.server_name_array[2]), "ccm")
   rbac_permissions       = toset(["READ", "DBA", "EDITOR", "ADMIN"])
 }
 
