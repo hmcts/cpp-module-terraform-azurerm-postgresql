@@ -11,7 +11,10 @@ END
 $do$;
 
 --read only:
-revoke all privileges on all tables in schema public from ${group};
-grant select on all tables in schema public to ${group};
-alter default privileges in schema public grant select on tables to ${group};
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO PUBLIC;
+REVOKE CREATE ON SCHEMA public FROM public;
+GRANT USAGE ON SCHEMA public to ${group};
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${group};
+
  %{~ endfor ~}
