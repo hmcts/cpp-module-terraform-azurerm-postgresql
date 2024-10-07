@@ -512,3 +512,14 @@ variable "entra_admin_user" {
   description = "entra admin username"
   type        = string
 }
+
+variable "entra_db_groups" {
+  description = "List of Enta groups to create for this DB"
+  type        = set(string)
+  default     = toset([])
+
+  validation {
+    condition     = length(setsubtract(var.entra_db_groups, toset(["READ", "DBA", "EDITOR", "ADMIN"])) == 0)
+    error_message = "Entra ID groups must be any of: ['READ', 'DBA', 'EDITOR', 'ADMIN']"
+  }
+}
