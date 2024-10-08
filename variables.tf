@@ -516,7 +516,7 @@ variable "entra_admin_user" {
 variable "entra_db_groups" {
   description = "List of Enta groups to create for this DB"
   type        = set(string)
-  default     = toset([])
+  default     = []
 
   validation {
     condition     = length(setsubtract(var.entra_db_groups, toset(["READ", "DBA", "EDITOR", "ADMIN"])) == 0)
