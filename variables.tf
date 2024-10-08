@@ -532,7 +532,7 @@ variable "entra_db_groups" {
   default     = []
 
   validation {
-    condition     = length(setsubtract(var.entra_db_groups, toset(["READ", "DBA", "EDITOR", "ADMIN"])) == 0)
+    condition     = length(tolist(setsubtract(var.entra_db_groups, toset(["READ", "DBA", "EDITOR", "ADMIN"])))) == 0
     error_message = "Entra ID groups must be any of: ['READ', 'DBA', 'EDITOR', 'ADMIN']"
   }
 }
