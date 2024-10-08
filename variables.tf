@@ -513,6 +513,19 @@ variable "entra_admin_user" {
   type        = string
 }
 
+variable "entra_admin_pwd" {
+  description = "entra admin password"
+  type        = string
+}
+
+variable "rbac" {
+  description = "entra group role mappings"
+  type = map(object({
+    file   = string
+    groups = list(string)
+  }))
+}
+
 variable "entra_db_groups" {
   description = "List of Enta groups to create for this DB"
   type        = set(string)
