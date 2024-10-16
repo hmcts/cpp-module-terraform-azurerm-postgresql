@@ -527,7 +527,7 @@ variable "rbac" {
 }
 
 variable "entra_db_groups" {
-  description = "List of Enta groups to create for this DB"
+  description = "List of Entra groups to create for this DB"
   type        = set(string)
   default     = []
 
