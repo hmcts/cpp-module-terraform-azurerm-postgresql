@@ -10,7 +10,7 @@ BEGIN
 END
 $do$;
 
---read only:
+--Editor privileges:
 grant select, insert, update, delete, create, connect on all tables in schema public to ${group};
 grant usage, select, update on all sequences in schema public to ${group};
 alter default privileges in schema public grant select, insert, update, delete, create, connect on tables to ${group};
