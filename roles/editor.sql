@@ -1,4 +1,4 @@
-
+%{~ for group in groups ~}
 --creating all the required roles for AAD groups
 DO
 $do$
@@ -16,4 +16,4 @@ grant usage, select, update on all sequences in schema public to ${group};
 
 alter default privileges in schema public grant select, insert, update on tables to ${group};
 alter default privileges in schema public grant usage, select, update on sequences to ${group};
-
+%{~ endfor ~}
