@@ -3,7 +3,7 @@ resource "null_resource" "db_setup" {
   triggers = {
     content = templatefile("${path.module}/roles/${each.key}.sql", { groups = [for group in each.value : lower(group)] })
   }
-  depends_on = [azurerm_postgresql_flexible_server.flexible_server, azurerm_postgresql_flexible_server_active_directory_administrator.entra_admin]
+  depends_on = [azurerm_postgresql_flexible_server.flexible_server, azurerm_postgresql_flexible_server_active_directory_administrator.entra_admin, azuread_group.instance_groups]
 
   provisioner "local-exec" {
     command = <<EOT
