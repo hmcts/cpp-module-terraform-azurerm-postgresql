@@ -71,8 +71,6 @@ module "postgresql" {
   create_lock                                 = var.create_lock
   entra_admin_user                            = var.entra_admin_user
   entra_admin_pwd                             = "test"
-  psql_instance_groups                        = {}
-  group_list                                  = {}
 
   depends_on = [
     azurerm_resource_group.test,
