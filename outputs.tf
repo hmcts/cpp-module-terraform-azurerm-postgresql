@@ -67,7 +67,3 @@ output "flexible_server_configurations" {
     }
   })
 }
-
-#output "rbac" {
-#  value = var.rbac
-#}

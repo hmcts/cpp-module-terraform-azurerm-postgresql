@@ -518,25 +518,6 @@ variable "entra_admin_pwd" {
   type        = string
 }
 
-#variable "rbac" {
-#  description = "entra group role mappings"
-#  type = map(object({
-#    file   = string
-#    groups = list(string)
-#  }))
-#}
-
-#variable "entra_db_groups" {
-#  description = "List of Enta groups to create for this DB"
-#  type        = set(string)
-#  default     = []
-#
-#  validation {
-#    condition     = length(tolist(setsubtract(var.entra_db_groups, toset(["READ", "DBA", "EDITOR", "ADMIN"])))) == 0
-#    error_message = "Entra ID groups must be any of: ['READ', 'DBA', 'EDITOR', 'ADMIN']"
-#  }
-#}
-
 variable "group_list" {
   type = map(list(string))
 }
