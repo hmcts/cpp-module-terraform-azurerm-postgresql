@@ -94,19 +94,16 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_prima
   target_resource_id         = local.primary_server_id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.0.id
 
-  log {
+  enabled_log {
     category = "PostgreSQLLogs"
-    enabled  = var.log_to_azure_monitor_single_primary.postgresql_logs.enabled
   }
 
-  log {
+  enabled_log {
     category = "QueryStoreRuntimeStatistics"
-    enabled  = var.log_to_azure_monitor_single_primary.querystore_runtime_statistics.enabled
   }
 
-  log {
+  enabled_log {
     category = "QueryStoreWaitStatistics"
-    enabled  = var.log_to_azure_monitor_single_primary.querystore_wait_statistics.enabled
   }
 
   metric {
@@ -121,19 +118,16 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_single_repli
   target_resource_id         = local.primary_server_id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.0.id
 
-  log {
+  enabled_log {
     category = "PostgreSQLLogs"
-    enabled  = var.log_to_azure_monitor_single_replica.postgresql_logs.enabled
   }
 
-  log {
+  enabled_log {
     category = "QueryStoreRuntimeStatistics"
-    enabled  = var.log_to_azure_monitor_single_replica.querystore_runtime_statistics.enabled
   }
 
-  log {
+  enabled_log {
     category = "QueryStoreWaitStatistics"
-    enabled  = var.log_to_azure_monitor_single_replica.querystore_wait_statistics.enabled
   }
 
   metric {

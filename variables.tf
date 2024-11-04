@@ -280,30 +280,12 @@ variable "log_to_azure_monitor_single_primary" {
   description = "Logging to Azure Monitor Settings for Primary Instance"
   type = object({
     enable = bool
-    postgresql_logs = object({
-      enabled = bool
-    })
-    querystore_runtime_statistics = object({
-      enabled = bool
-    })
-    querystore_wait_statistics = object({
-      enabled = bool
-    })
     all_metrics = object({
       enabled = bool
     })
   })
   default = {
     enable = false
-    postgresql_logs = {
-      enabled = true
-    }
-    querystore_runtime_statistics = {
-      enabled = true
-    }
-    querystore_wait_statistics = {
-      enabled = true
-    }
     all_metrics = {
       enabled = false
     }
@@ -314,30 +296,12 @@ variable "log_to_azure_monitor_single_replica" {
   description = "Logging to Azure Monitor Settings for Replica Instance"
   type = object({
     enable = bool
-    postgresql_logs = object({
-      enabled = bool
-    })
-    querystore_runtime_statistics = object({
-      enabled = bool
-    })
-    querystore_wait_statistics = object({
-      enabled = bool
-    })
     all_metrics = object({
       enabled = bool
     })
   })
   default = {
     enable = false
-    postgresql_logs = {
-      enabled = true
-    }
-    querystore_runtime_statistics = {
-      enabled = true
-    }
-    querystore_wait_statistics = {
-      enabled = true
-    }
     all_metrics = {
       enabled = false
     }
