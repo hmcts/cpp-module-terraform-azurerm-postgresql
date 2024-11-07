@@ -15,8 +15,8 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
   administrator_password = data.vault_generic_secret.administrator_creds.data.administrator_password
   version                = var.server_version
 
-  delegated_subnet_id           = var.public_network_access_enabled ? "" : var.delegated_subnet_id
-  private_dns_zone_id           = var.public_network_access_enabled ? "" : var.private_dns_zone_id
+  delegated_subnet_id           = var.delegated_subnet_id
+  private_dns_zone_id           = var.private_dns_zone_id
   public_network_access_enabled = var.public_network_access_enabled
 
   create_mode                       = var.create_mode
