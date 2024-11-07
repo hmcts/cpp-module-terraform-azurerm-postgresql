@@ -15,7 +15,7 @@ locals {
   group_list = {
     for grp in var.entra_db_groups : "${var.server_name}-${lower(grp)}" => {
       groups = [
-        "GRP_PGFS_CP_${local.group_environment_name}_${local.group_project}_${local.group_replica_id}_${grp}",
+        "GRP_PGFS_CP_${local.group_environment_name}_${local.group_project}_${local.group_replica_id}_${grp}${local.unique_suffix}${local.additional_segments}",
         "GRP_PGFS_CP_${local.group_project}_${grp}",
         "GRP_PGFS_CP_${upper(local.rbac_platform)}_${grp}",
         "GRP_PGFS_CP_${local.group_environment_name}_${grp}"
