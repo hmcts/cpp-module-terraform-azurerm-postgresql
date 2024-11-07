@@ -9,7 +9,7 @@ locals {
   rbac_platform          = var.platform == "nlv" ? "nle" : var.platform == "lv" ? "lve" : var.platform
 
   // Create a unique identifier based on all segments after the standard format
-  additional_segments = join("_", slice(local.server_name_array, 4, length(local.server_name_array)))
+  additional_segments = upper(join("_", slice(local.server_name_array, 4, length(local.server_name_array))))
   unique_suffix       = length(local.additional_segments) > 0 ? "_" : ""
 
   group_list = {
