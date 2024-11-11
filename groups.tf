@@ -33,7 +33,10 @@ data "azuread_group" "existing_group" {
 resource "azuread_group" "instance_groups" {
   // Group creation may break if server name does not meed expected format (e.g. replica DBs).
   // In such a case, no groups will be created..
-  for_each         = length(var.entra_db_groups) > 0 && length(data.azuread_group.existing_group) == 0 ? var.entra_db_groups : []
+  for_each = length(var.entra_db_groups) > 0 ? [
+    for idx, group in var.entra_db_groups : group
+    if try(data.azuread_group.existing_group[idx], null) == null
+  ] : []
   display_name     = "GRP_PGFS_CP_${local.group_environment_name}_${local.group_project}_${local.group_replica_id}_${each.key}"
   security_enabled = true
 }
