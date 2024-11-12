@@ -5,7 +5,7 @@ locals {
   server_name_array      = split("-", var.server_name)
   group_environment_name = upper(local.server_name_array[1])
   group_project          = upper(local.server_name_array[3])
-  group_replica_id       = upper(replace(local.server_name_array[2], "[^0-9]", ""))
+  group_replica_id       = upper(replace(local.server_name_array[2], "[^[:digit:]]", ""))
   rbac_platform          = var.platform == "nlv" ? "nle" : var.platform == "lv" ? "lve" : var.platform
 
 
