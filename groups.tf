@@ -5,7 +5,7 @@ locals {
   server_name_array      = split("-", var.server_name)
   group_environment_name = upper(local.server_name_array[1])
   group_project          = upper(local.server_name_array[3])
-  group_replica_id       = upper(trimprefix(local.server_name_array[2], "ccm"))
+  group_replica_id       = replace(local.server_name_array[2], "/[^\\d]/", "")
   rbac_platform          = var.platform == "nlv" ? "nle" : var.platform == "lv" ? "lve" : var.platform
 
 
@@ -21,9 +21,6 @@ locals {
     }
   }
 }
-
-
-
 
 // Groups that grant a specific permission to this specific PGFS instance
 resource "azuread_group" "instance_groups" {
