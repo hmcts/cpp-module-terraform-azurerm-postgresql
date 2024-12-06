@@ -19,8 +19,10 @@ REVOKE ALL PRIVILEGES ON SCHEMA public FROM ${group};
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM ${group};
 REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM ${group};
 
-
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${group};
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO ${group};
+
+-- Set pgaudit log level to groups:
+ALTER ROLE ${group} SET pgaudit.log = 'all';
 
  %{~ endfor ~}
