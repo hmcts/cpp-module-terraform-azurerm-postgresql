@@ -1,7 +1,7 @@
 resource "random_password" "administrator_password" {
   length           = 24
   number           = true
-  special          = true
+  special          = var.admin_password_special_char
   override_special = "!%&*()-_=+[]{}<>:?"
 }
 
