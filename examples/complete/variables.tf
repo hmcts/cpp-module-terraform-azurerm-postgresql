@@ -383,3 +383,8 @@ variable "entra_admin_user" {
   description = "entra admin username"
   type        = string
 }
+
+variable "admin_password_special_char" {
+  type    = bool
+  default = true
+}
