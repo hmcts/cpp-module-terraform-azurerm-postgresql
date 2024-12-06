@@ -385,5 +385,6 @@ variable "entra_admin_user" {
 }
 
 variable "admin_password_special_char" {
-  type = bool
+  type    = bool
+  default = true
 }
