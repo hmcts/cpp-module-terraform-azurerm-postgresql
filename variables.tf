@@ -533,3 +533,7 @@ variable "platform" {
   type    = string
   default = "nlv"
 }
+
+variable "admin_password_special_char" {
+  type = bool
+}

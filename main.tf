@@ -1,7 +1,8 @@
 resource "random_password" "administrator_password" {
   length           = 24
   number           = true
-  special          = false
+  special          = var.admin_password_special_char
+  override_special = "!%&*()-_=+[]{}<>:?"
 }
 
 resource "vault_generic_secret" "administrator_creds" {
