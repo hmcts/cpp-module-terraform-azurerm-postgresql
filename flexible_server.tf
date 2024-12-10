@@ -43,6 +43,7 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
 }
 
 resource "azurerm_postgresql_flexible_server_active_directory_administrator" "entra_admin" {
+  count               = var.create_mode != "PointInTimeRestore" ? 1 : 0
   server_name         = azurerm_postgresql_flexible_server.flexible_server.0.name
   resource_group_name = var.resource_group_name
   tenant_id           = data.azurerm_client_config.current.tenant_id
