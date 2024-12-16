@@ -1,5 +1,5 @@
 resource "null_resource" "db_setup" {
-  for_each = { for idx, group in local.group_list : idx => group }
+  for_each = local.group_list
   triggers = {
     content = templatefile("${path.module}/roles/${each.value.group_name}.sql", { groups = [for group in each.value.groups : lower(group)] })
   }

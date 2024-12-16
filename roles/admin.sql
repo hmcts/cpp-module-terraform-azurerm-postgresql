@@ -1,4 +1,9 @@
 %{~ for group in groups ~}
+-- Acquire locks to prevent concurrent updates
+BEGIN;
+LOCK TABLE pg_roles IN ACCESS EXCLUSIVE MODE;
+LOCK TABLE pg_default_acl IN ACCESS EXCLUSIVE MODE;
+
 -- Creating all the required roles for AAD Admin groups
 DO
 $do$
@@ -20,5 +25,6 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO $
 
 -- Set pgaudit log level to groups:
 ALTER ROLE ${group} SET pgaudit.log = 'all';
+COMMIT;
 
 %{~ endfor ~}
