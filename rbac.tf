@@ -13,6 +13,8 @@ resource "null_resource" "render_sql_files" {
     command = <<EOT
       unique_sql_file_name="final_${each.value.group_name}_${local.group_project}.sql"
       echo "$render_template" > ${path.module}/roles/$unique_sql_file_name
+      echo "SQL file created: ${path.module}/roles/$unique_sql_file_name"
+      cat ${path.module}/roles/$unique_sql_file_name
     EOT
     environment = {
       render_template = templatefile("${path.module}/roles/${each.value.group_name}.sql", { groups = [for group in each.value.groups : lower(group)] })
