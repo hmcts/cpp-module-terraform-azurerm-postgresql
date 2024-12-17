@@ -38,7 +38,7 @@ resource "null_resource" "execute_sql_files" {
       tenant_id = data.azurerm_client_config.current.tenant_id
       entra_admin = data.azurerm_key_vault_secret.entra_admin.0.value
       db_user = var.entra_admin_user
-      render_directory = "${path.module}/roles/"
+      render_directory = "${path.module}/roles"
     }
   }
 
