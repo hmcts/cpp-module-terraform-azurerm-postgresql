@@ -20,12 +20,6 @@ locals {
       group_name = lower(grp)
     }
   }
-
-  // Combine all SQL files into one
-  combined_sql_content = join("\n", [
-    for key, group in local.group_list :
-    templatefile("${path.module}/roles/${group.group_name}.sql", { groups = [for grp in group.groups : lower(grp)] })
-  ])
 }
 
 // Groups that grant a specific permission to this specific PGFS instance

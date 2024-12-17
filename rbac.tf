@@ -1,4 +1,8 @@
-resource "null_resource" "db_setup" {
+resource "null_resource" "render_sql_files" {
+  for_each = local.group_list
+  triggers = {
+    content = templatefile("${path.module}/roles/${each.value.group_name}.sql", { groups = [for group in each.value.groups : lower(group)] })
+  }
   depends_on = [
     azurerm_postgresql_flexible_server.flexible_server,
     azurerm_postgresql_flexible_server_active_directory_administrator.entra_admin,
@@ -7,15 +11,36 @@ resource "null_resource" "db_setup" {
 
   provisioner "local-exec" {
     command = <<EOT
-      # Create a temporary file to store combined SQL content
-      combined_sql_file="${path.module}/roles/combined_setup_${local.group_project}.sql"
-      echo "${local.combined_sql_content}" > $combined_sql_file
-
-      # Execute the combined SQL script using psql
-      az login --service-principal -u ${data.azuread_service_principal.current.client_id} -t ${data.azurerm_client_config.current.tenant_id} -p ${data.azurerm_key_vault_secret.entra_admin.0.value}
-      export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
-
-      psql -h ${azurerm_postgresql_flexible_server.flexible_server.0.fqdn} -p 5432 -U ${var.entra_admin_user} -d postgres -v 'ON_ERROR_STOP=1' -f $combined_sql_file
+      unique_sql_file_name="final_${each.value.group_name}_${local.group_project}.sql"
+      echo "$render_template" > ${path.module}/roles/$unique_sql_file_name
     EOT
+    environment = {
+      render_template = templatefile("${path.module}/roles/${each.value.group_name}.sql", { groups = [for group in each.value.groups : lower(group)] })
+    }
   }
+}
+
+resource "null_resource" "execute_sql_files" {
+#  triggers = {
+#    server_fqdn      = azurerm_postgresql_flexible_server.flexible_server.0.fqdn
+#    az_user          = data.azuread_service_principal.current.client_id
+#    tenant           = data.azurerm_client_config.current.tenant_id
+#    client_id        = data.azurerm_key_vault_secret.entra_admin.0.value
+#    db_user          = var.entra_admin_user
+#    script_checksum  = templatefile("${path.module}/scripts/sql_role.sh", {})
+#  }
+
+  provisioner "local-exec" {
+    command = "bash ${path.module}/scripts/sql_role.sh"
+    environment = {
+      server_fqdn = azurerm_postgresql_flexible_server.flexible_server.0.fqdn
+      az_user     = data.azuread_service_principal.current.client_id
+      tenant = data.azurerm_client_config.current.tenant_id
+      client_id = data.azurerm_key_vault_secret.entra_admin.0.value
+      db_user = var.entra_admin_user
+      render_template = "${path.module}/roles/"
+    }
+  }
+
+  depends_on = [null_resource.render_sql_files]
 }
