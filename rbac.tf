@@ -38,7 +38,7 @@ resource "null_resource" "execute_sql_files" {
           echo "Executing SQL file: $sql_file"
 
           # Execute the SQL file using psql
-         psql -h ${azurerm_postgresql_flexible_server.flexible_server.0.fqdn} -p 5432 -U ${var.entra_admin_user} -d postgres -v 'ON_ERROR_STOP=1' -f ${path.module}/roles/$sql_file
+         psql -h ${azurerm_postgresql_flexible_server.flexible_server.0.fqdn} -p 5432 -U ${var.entra_admin_user} -d postgres -v 'ON_ERROR_STOP=1' -f $sql_file
 
       done
     EOT
