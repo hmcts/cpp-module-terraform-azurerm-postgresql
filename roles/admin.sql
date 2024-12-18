@@ -17,7 +17,6 @@ GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO ${group};
 -- Ensure future tables and sequences get the same privileges:
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO ${group};
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO ${group};
-
 -- Set pgaudit log level to groups:
 ALTER ROLE ${group} SET pgaudit.log = 'all';
 
