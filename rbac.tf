@@ -15,18 +15,16 @@ resource "null_resource" "render_sql_files" {
       echo '${jsonencode(local.group_list)}' | jq -r 'to_entries[] | .value.group_name' | while read -r grp; do
         # Render the SQL file for each group
         unique_sql_file_name="final_$grp_${local.group_project}.sql"
+        render_template=$(templatefile("${path.module}/roles/$grp.sql", { groups = [for g in local.group_list[grp].groups : lower(g)] }))
+        echo "$render_template" > ${path.module}/roles/$unique_sql_file_name
         echo "Executing SQL file for group: $grp"
 
         # Assuming psql for PostgreSQL, replace with your relevant SQL client
-        psql -h ${azurerm_postgresql_flexible_server.flexible_server.0.fqdn} -U ${var.entra_admin_user} -d postgres -f ${path.module}/roles/$unique_sql_file_name
+        psql -h ${azurerm_postgresql_flexible_server.flexible_server.0.fqdn} -U ${var.entra_admin_user} -d postgres  -v 'ON_ERROR_STOP=1' -f ${path.module}/roles/$unique_sql_file_name
 
         echo "Finished executing SQL file for group: $grp"
       done
     EOT
-
-    environment = {
-      render_template = [for group in local.group_list : templatefile("${path.module}/roles/${group.group_name}.sql", { groups = [for g in group.groups : lower(g)] })]
-    }
   }
 }
 
