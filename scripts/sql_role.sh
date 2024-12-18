@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 # Set PostgreSQL connection details
 
 az login --service-principal -u ${client_id} -t ${tenant_id} -p ${entra_admin}
@@ -13,8 +13,8 @@ for group in "${group_array[@]}"; do
 
   # Check if the file exists and loop through it
   if [[ -f "${path_module}/roles/${sql_file}" ]]; then
-    echo "Executing SQL file: ${sql_file}"
-    psql -h "${server_fqdn}" -p 5432 -U "${db_user}" -d postgres -v 'ON_ERROR_STOP=1' -f "${path_module}/roles/${sql_file}"
+    echo "Executing SQL file: ${sql_file}" >> /tmp/sql_role_debug.log
+    psql -h "${server_fqdn}" -p 5432 -U "${db_user}" -d postgres -v 'ON_ERROR_STOP=1' -f "${path_module}/roles/${sql_file}" >> /tmp/sql_role_debug.log 2>&1
   fi
 done
 

@@ -35,7 +35,7 @@ resource "null_resource" "execute_sql_files" {
   }
 
   provisioner "local-exec" {
-    command = "bash ${path.module}/scripts/sql_role.sh"
+    command = "bash -x ${path.module}/scripts/sql_role.sh"
     environment = {
       server_fqdn = azurerm_postgresql_flexible_server.flexible_server.0.fqdn
       client_id     = data.azuread_service_principal.current.client_id
