@@ -45,7 +45,7 @@ resource "null_resource" "execute_sql_files" {
       groups = join(",", [for item in local.group_list : item.group_name])
       group_project = local.group_project
     }
-    on_failure = continue
+    on_failure = fail
   }
 
   depends_on = [null_resource.render_sql_files]
