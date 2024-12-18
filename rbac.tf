@@ -32,6 +32,10 @@ resource "null_resource" "execute_sql_files" {
     entra_admin        = data.azurerm_key_vault_secret.entra_admin.0.value
     db_user          = var.entra_admin_user
     script_checksum  = filemd5("${path.module}/scripts/sql_role.sh")
+    rendered_groups = join(",", [
+      for item in local.group_list :
+      item.group_name if fileexists("${path.module}/roles/final_${item.group_name}_${local.group_project}.sql")
+    ])
   }
 
   provisioner "local-exec" {
@@ -43,7 +47,7 @@ resource "null_resource" "execute_sql_files" {
       entra_admin = data.azurerm_key_vault_secret.entra_admin.0.value
       db_user = var.entra_admin_user
       file_path = "${path.module}/roles"
-      groups = join(",", [for item in local.group_list : item.group_name])
+      groups = "${self.triggers.rendered_groups}"
       group_project = local.group_project
     }
     on_failure = fail
