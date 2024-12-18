@@ -42,7 +42,7 @@ resource "null_resource" "execute_sql_files" {
       tenant_id = data.azurerm_client_config.current.tenant_id
       entra_admin = data.azurerm_key_vault_secret.entra_admin.0.value
       db_user = var.entra_admin_user
-      file_name = [for item in local.group_list : item.group_name]
+      groups = join(",", [for item in local.group_list : item.group_name])
       group_project = local.group_project
     }
   }
