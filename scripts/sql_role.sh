@@ -7,7 +7,7 @@ export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --quer
 
 
 
-IFS=',' read -r -a group_array <<< "$groups"
+IFS=',' read -r -a group_array <<< "${groups}"
 for group in "${group_array[@]}"; do
   sql_file="final_${group}_${group_project}.sql"
   echo "Executing SQL file: ${sql_file}" >> /tmp/sql_role_debug.log
