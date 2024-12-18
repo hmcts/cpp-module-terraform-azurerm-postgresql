@@ -1,8 +1,6 @@
 resource "null_resource" "render_sql_files" {
-  for_each = local.group_list
-
   triggers = {
-    content = templatefile("${path.module}/roles/${each.value.group_name}.sql", { groups = [for group in each.value.groups : lower(group)] })
+    content = join(",", [for group in local.group_list : templatefile("${path.module}/roles/${group.group_name}.sql", { groups = [for g in group.groups : lower(g)] })])
   }
 
   depends_on = [
@@ -13,41 +11,51 @@ resource "null_resource" "render_sql_files" {
 
   provisioner "local-exec" {
     command = <<EOT
-      unique_sql_file_name="final_${each.value.group_name}_${local.group_project}.sql"
-      echo "$render_template" > ${path.module}/roles/$unique_sql_file_name
-      ls -l ${path.module}/roles
+      # Encode the group list as JSON and parse it with jq
+      echo '${jsonencode(local.group_list)}' | jq -r 'to_entries[] | .value.group_name' | while read -r grp; do
+        # Render the SQL file for each group
+        unique_sql_file_name="final_$grp_${local.group_project}.sql"
+        echo "Executing SQL file for group: $grp"
+
+        # Assuming psql for PostgreSQL, replace with your relevant SQL client
+        psql -h ${azurerm_postgresql_flexible_server.flexible_server.0.fqdn} -U ${var.entra_admin_user} -d postgres -f ${path.module}/roles/$unique_sql_file_name
+
+        echo "Finished executing SQL file for group: $grp"
+      done
     EOT
 
     environment = {
-      render_template = templatefile("${path.module}/roles/${each.value.group_name}.sql", { groups = [for group in each.value.groups : lower(group)] })
+      render_template = [for group in local.group_list : templatefile("${path.module}/roles/${group.group_name}.sql", { groups = [for g in group.groups : lower(g)] })]
     }
   }
 }
 
-resource "null_resource" "execute_sql_files" {
-  triggers = {
-    server_fqdn      = azurerm_postgresql_flexible_server.flexible_server.0.fqdn
-    client_id          = data.azuread_service_principal.current.client_id
-    tenant_id           = data.azurerm_client_config.current.tenant_id
-    entra_admin        = data.azurerm_key_vault_secret.entra_admin.0.value
-    db_user          = var.entra_admin_user
-    script_checksum  = filemd5("${path.module}/scripts/sql_role.sh")
-  }
 
-  provisioner "local-exec" {
-    command = "bash -x ${path.module}/scripts/sql_role.sh"
-    environment = {
-      server_fqdn = azurerm_postgresql_flexible_server.flexible_server.0.fqdn
-      client_id     = data.azuread_service_principal.current.client_id
-      tenant_id = data.azurerm_client_config.current.tenant_id
-      entra_admin = data.azurerm_key_vault_secret.entra_admin.0.value
-      db_user = var.entra_admin_user
-      file_path = "${path.module}/roles"
-      groups = join(",", [for item in local.group_list : item.group_name])
-      group_project = local.group_project
-    }
-    on_failure = fail
-  }
-
-  depends_on = [null_resource.render_sql_files]
-}
+#resource "null_resource" "execute_sql_files" {
+#  triggers = {
+#    server_fqdn      = azurerm_postgresql_flexible_server.flexible_server.0.fqdn
+#    client_id          = data.azuread_service_principal.current.client_id
+#    tenant_id           = data.azurerm_client_config.current.tenant_id
+#    entra_admin        = data.azurerm_key_vault_secret.entra_admin.0.value
+#    db_user          = var.entra_admin_user
+#    script_checksum  = filemd5("${path.module}/scripts/sql_role.sh")
+#    sql_files_checksum = file("${path.module}/roles/sql_files_checksum.txt")
+#  }
+#
+#  provisioner "local-exec" {
+#    command = "bash -x ${path.module}/scripts/sql_role.sh"
+#    environment = {
+#      server_fqdn = azurerm_postgresql_flexible_server.flexible_server.0.fqdn
+#      client_id     = data.azuread_service_principal.current.client_id
+#      tenant_id = data.azurerm_client_config.current.tenant_id
+#      entra_admin = data.azurerm_key_vault_secret.entra_admin.0.value
+#      db_user = var.entra_admin_user
+#      file_path = "${path.module}/roles"
+#      groups = join(",", [for item in local.group_list : item.group_name])
+#      group_project = local.group_project
+#    }
+#    on_failure = fail
+#  }
+#
+#  depends_on = [null_resource.render_sql_files]
+#}
