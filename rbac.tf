@@ -47,5 +47,10 @@ resource "null_resource" "execute_sql_files" {
     on_failure = fail
   }
 
-  depends_on = [null_resource.render_sql_files]
+  depends_on = [
+    azurerm_postgresql_flexible_server.flexible_server,
+    azurerm_postgresql_flexible_server_active_directory_administrator.entra_admin,
+    azuread_group.instance_groups,
+    null_resource.render_sql_files
+  ]
 }
