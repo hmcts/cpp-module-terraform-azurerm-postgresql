@@ -15,7 +15,6 @@ resource "null_resource" "render_sql_files" {
     command = <<EOT
       unique_sql_file_name="final_${each.value.group_name}_${local.group_project}.sql"
       echo "$render_template" > ${path.module}/roles/$unique_sql_file_name
-      ls -l ${path.module}/roles
     EOT
 
     environment = {
