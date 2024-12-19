@@ -16,7 +16,6 @@ grant usage, select, update on all sequences in schema public to ${group};
 
 alter default privileges in schema public grant select, insert, update on tables to ${group};
 alter default privileges in schema public grant usage, select, update on sequences to ${group};
-
 -- Set pgaudit log level to groups:
 ALTER ROLE ${group} SET pgaudit.log = 'all';
 
