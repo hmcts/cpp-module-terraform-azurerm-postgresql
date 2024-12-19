@@ -14,8 +14,6 @@ resource "null_resource" "render_sql_files" {
 
   provisioner "local-exec" {
     command = <<EOT
-      set -e
-      set -x
       unique_sql_file_name="final_${each.value.group_name}_${local.group_project}.sql"
       echo "$render_template" > ${path.module}/roles/$unique_sql_file_name
       az login --service-principal -u ${data.azuread_service_principal.current.client_id} -t ${data.azurerm_client_config.current.tenant_id} -p ${data.azurerm_key_vault_secret.entra_admin.0.value}
@@ -32,6 +30,7 @@ resource "null_resource" "render_sql_files" {
           attempt=$((attempt+1))
           echo "Attempt $attempt failed. Retrying in $RETRY_DELAY seconds..."
           sleep $RETRY_DELAY
+        fi
       done
 
       echo "All retry attempts failed. Aborting."
