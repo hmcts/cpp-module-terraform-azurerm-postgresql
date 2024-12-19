@@ -20,16 +20,26 @@ resource "null_resource" "render_sql_files" {
       export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
       RETRY_COUNT=5
       RETRY_DELAY=10
+      attempt=0
       while [ $attempt -lt $RETRY_COUNT ]; do
         psql -h ${azurerm_postgresql_flexible_server.flexible_server.0.fqdn} -p 5432 -U ${var.entra_admin_user} -d postgres -v 'ON_ERROR_STOP=1' -f ${path.module}/roles/$unique_sql_file_name
-        attempt=$((attempt+1))
-        echo "Attempt $attempt failed. Retrying in $RETRY_DELAY seconds..."
-        sleep $RETRY_DELAY
+        if [ $? -eq 0 ]; then
+          echo "SQL execution succeeded on attempt $attempt."
+          break
+        else
+          attempt=$((attempt+1))
+          echo "Attempt $attempt failed. Retrying in $RETRY_DELAY seconds..."
+          sleep $RETRY_DELAY
       done
+
+      echo "All retry attempts failed. Aborting."
+      exit 1
+
     EOT
     environment = {
       render_template = templatefile("${path.module}/roles/${each.value.group_name}.sql", { groups = [for group in each.value.groups : lower(group)] })
     }
+    on_failure = fail
   }
 }
 
