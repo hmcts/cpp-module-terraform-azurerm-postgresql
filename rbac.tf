@@ -18,9 +18,15 @@ resource "null_resource" "render_sql_files" {
       echo "$render_template" > ${path.module}/roles/$unique_sql_file_name
       az login --service-principal -u ${data.azuread_service_principal.current.client_id} -t ${data.azurerm_client_config.current.tenant_id} -p ${data.azurerm_key_vault_secret.entra_admin.0.value}
       export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
-      psql -h ${azurerm_postgresql_flexible_server.flexible_server.0.fqdn} -p 5432 -U ${var.entra_admin_user} -d postgres -v 'ON_ERROR_STOP=1' -f ${path.module}/roles/$unique_sql_file_name
+      RETRY_COUNT=5
+      RETRY_DELAY=10
+      while [ $attempt -lt $RETRY_COUNT ]; do
+        psql -h ${azurerm_postgresql_flexible_server.flexible_server.0.fqdn} -p 5432 -U ${var.entra_admin_user} -d postgres -v 'ON_ERROR_STOP=1' -f ${path.module}/roles/$unique_sql_file_name
+        attempt=$((attempt+1))
+        echo "Attempt $attempt failed. Retrying in $RETRY_DELAY seconds..."
+        sleep $RETRY_DELAY
+      done
     EOT
-    max_retries = 4
     environment = {
       render_template = templatefile("${path.module}/roles/${each.value.group_name}.sql", { groups = [for group in each.value.groups : lower(group)] })
     }
