@@ -21,4 +21,5 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO $
 -- Set pgaudit log level to groups:
 ALTER ROLE ${group} SET pgaudit.log = 'all';
 
+
 %{~ endfor ~}

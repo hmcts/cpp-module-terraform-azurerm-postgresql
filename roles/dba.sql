@@ -18,4 +18,5 @@ alter default privileges in schema public grant usage, select on sequences to ${
 -- Set pgaudit log level to groups:
 ALTER ROLE ${group} SET pgaudit.log = 'all';
 
+
  %{~ endfor ~}
