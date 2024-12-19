@@ -25,5 +25,4 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO ${group};
 -- Set pgaudit log level to groups:
 ALTER ROLE ${group} SET pgaudit.log = 'all';
 
-
  %{~ endfor ~}
