@@ -32,7 +32,10 @@ resource "null_resource" "render_sql_files" {
           sleep $RETRY_DELAY
         fi
       done
-
+      if [ $attempt -eq $RETRY_COUNT ]; then
+        echo "Failed after $RETRY_COUNT attempts."
+        exit 1
+      fi
 
     EOT
     environment = {
