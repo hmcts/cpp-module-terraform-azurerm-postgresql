@@ -18,8 +18,3 @@ for group in "${group_array[@]}"; do
   fi
 
 done
-
-
-
-
-

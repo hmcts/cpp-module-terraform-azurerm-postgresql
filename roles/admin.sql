@@ -1,6 +1,5 @@
 %{~ for group in groups ~}
 -- Creating all the required roles for AAD Admin groups
-
 DO
 $do$
 BEGIN
