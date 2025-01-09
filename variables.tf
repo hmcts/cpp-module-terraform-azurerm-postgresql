@@ -537,3 +537,15 @@ variable "platform" {
 variable "admin_password_special_char" {
   type = bool
 }
+
+variable "logfiles_download_enable" {
+  description = "Enable server logs"
+  type        = bool
+  default     = false
+}
+
+variable "logfiles_retention_days"  {
+  description = "Define how many days the server logs should be retained"
+  type        = string
+  default     = "7"
+}
