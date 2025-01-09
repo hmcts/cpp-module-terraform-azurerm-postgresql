@@ -65,6 +65,8 @@ module "postgresql" {
   log_to_azure_monitor_single_primary         = var.log_to_azure_monitor_single_primary
   log_to_azure_monitor_single_replica         = var.log_to_azure_monitor_single_replica
   log_to_azure_monitor_flexible               = var.log_to_azure_monitor_flexible
+  logfiles_download_enable                    = var.logfiles_download_enable
+  logfiles_retention_days                     = var.logfiles_retention_days
   alerts_config_flexible                      = var.alerts_config_flexible
   action_group_enable_data_lookup             = var.action_group_enable_data_lookup
   log_analytics_workspace_enable_data_lookup  = var.log_analytics_workspace_enable_data_lookup
