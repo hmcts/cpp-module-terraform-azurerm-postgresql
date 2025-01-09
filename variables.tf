@@ -540,8 +540,8 @@ variable "admin_password_special_char" {
 
 variable "logfiles_download_enable" {
   description = "Enable server logs"
-  type        = bool
-  default     = false
+  type        = string
+  default     = "off"
 }
 
 variable "logfiles_retention_days"  {
