@@ -21,6 +21,8 @@ locals {
   }
 }
 
+// Move instance groups from module
+// block can be removed once change has been applied to all envs
 removed {
   from = azuread_group.instance_groups
 
