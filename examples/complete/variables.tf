@@ -388,3 +388,15 @@ variable "admin_password_special_char" {
   type    = bool
   default = true
 }
+
+variable "logfiles_download_enable" {
+  description = "Enable server logs"
+  type        = string
+  default     = "off"
+}
+
+variable "logfiles_retention_days"  {
+  description = "Define how many days the server logs should be retained"
+  type        = string
+  default     = "7"
+}
