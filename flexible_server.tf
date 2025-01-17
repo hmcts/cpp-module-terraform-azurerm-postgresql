@@ -84,6 +84,18 @@ resource "azurerm_postgresql_flexible_server_configuration" "db_config_extension
   value     = var.extensions_list
 }
 
+resource "azurerm_postgresql_flexible_server_configuration" "logfiles_download_enable" {
+  name      = "logfiles.download_enable"
+  server_id = local.primary_server_id
+  value     = var.logfiles_download_enable
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "logfiles_retention_days" {
+  name      = "logfiles.retention_days"
+  server_id = local.primary_server_id
+  value     = var.logfiles_retention_days
+}
+
 resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
   count                      = var.log_to_azure_monitor_flexible.enable && !var.single_server ? 1 : 0
   name                       = "log_to_azure_monitor"
