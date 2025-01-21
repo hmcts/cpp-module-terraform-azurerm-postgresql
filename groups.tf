@@ -27,6 +27,6 @@ removed {
   from = azuread_group.instance_groups
 
   lifecycle {
-    destroy = false
+    destroy = true
   }
 }
