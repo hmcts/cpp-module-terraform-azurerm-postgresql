@@ -537,8 +537,3 @@ variable "platform" {
 variable "admin_password_special_char" {
   type = bool
 }
-
-variable "entra_db_project_specific_groups" {
-  type    = list(string)
-  default = []
-}

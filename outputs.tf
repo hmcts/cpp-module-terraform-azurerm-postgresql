@@ -67,7 +67,3 @@ output "flexible_server_configurations" {
     }
   })
 }
-
-output "group_list" {
-  value = local.group_list
-}
