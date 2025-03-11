@@ -23,6 +23,12 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
   source_server_id                  = var.source_server_id
   point_in_time_restore_time_in_utc = var.point_in_time_restore_time_in_utc
 
+  maintenance_window {
+    day_of_week  = var.maintenance_window.day_of_week
+    start_hour   = var.maintenance_window.start_hour
+    start_minute = var.maintenance_window.start_minute
+  }
+
   dynamic "high_availability" {
     for_each = var.create_replica_instance ? [1] : []
     content {
