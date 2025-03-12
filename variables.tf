@@ -562,9 +562,5 @@ variable "maintenance_window" {
     start_hour   = number  // 0 to 23
     start_minute = number  // 0 to 59
   })
-  default = {
-    day_of_week  = 0
-    start_hour   = 0
-    start_minute = 0
-  }
+  default = null
 }
