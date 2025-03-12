@@ -549,7 +549,7 @@ variable "logfiles_download_enable" {
   default     = "off"
 }
 
-variable "logfiles_retention_days"  {
+variable "logfiles_retention_days" {
   description = "Define how many days the server logs should be retained"
   type        = string
   default     = "7"
