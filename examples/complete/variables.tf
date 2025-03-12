@@ -395,8 +395,24 @@ variable "logfiles_download_enable" {
   default     = "off"
 }
 
-variable "logfiles_retention_days"  {
+variable "logfiles_retention_days" {
   description = "Define how many days the server logs should be retained"
   type        = string
   default     = "7"
+}
+
+variable "maintenance_window" {
+  description = "Maintenance window for PostgreSQL instances"
+  type = object({
+    enable       = bool
+    day_of_week  = number
+    start_hour   = number
+    start_minute = number
+  })
+  default = {
+    enable       = false
+    day_of_week  = 0
+    start_hour   = 0
+    start_minute = 0
+  }
 }
