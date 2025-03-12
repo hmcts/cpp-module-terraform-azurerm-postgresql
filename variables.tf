@@ -558,10 +558,10 @@ variable "logfiles_retention_days"  {
 variable "maintenance_window" {
   description = "Maintenance window for PostgreSQL instances"
   type = object({
-    enable       = bool    // Enable or disable maintenance window
-    day_of_week  = number  // 0 (Sunday) to 6 (Saturday)
-    start_hour   = number  // 0 to 23
-    start_minute = number  // 0 to 59
+    enable       = bool
+    day_of_week  = number
+    start_hour   = number
+    start_minute = number
   })
   default = {
     enable       = false
