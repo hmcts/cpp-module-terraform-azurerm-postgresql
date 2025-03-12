@@ -74,6 +74,7 @@ module "postgresql" {
   entra_admin_user                            = var.entra_admin_user
   entra_admin_pwd                             = "test"
   admin_password_special_char                 = var.admin_password_special_char
+  maintenance_window                          = var.maintenance_window
   depends_on = [
     azurerm_resource_group.test,
     azurerm_private_dns_zone.dns,
