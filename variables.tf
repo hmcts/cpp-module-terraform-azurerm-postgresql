@@ -570,3 +570,9 @@ variable "maintenance_window" {
     start_minute = 0
   }
 }
+
+variable "skip_config_for_stopped_servers" {
+  description = "List of PostgreSQL Flexible Server names to skip configuration for (e.g. stopped servers)"
+  type        = list(string)
+  default     = []
+}

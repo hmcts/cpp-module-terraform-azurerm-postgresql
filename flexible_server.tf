@@ -70,40 +70,49 @@ resource "azurerm_postgresql_flexible_server_firewall_rule" "firewall_rules" {
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "db_configs" {
-  for_each  = var.single_server ? {} : var.postgresql_configurations
-  server_id = local.primary_server_id
+  for_each = var.single_server || contains(var.skip_config_for_stopped_servers, var.server_name) ? {} : var.postgresql_configurations
 
-  name  = each.key
-  value = each.value
+  server_id = local.primary_server_id
+  name      = each.key
+  value     = each.value
 }
 
-resource "azurerm_postgresql_flexible_server_configuration" "db_pgbouncer_config" {
-  for_each  = var.single_server ? {} : var.pgbouncer_configurations != null ? var.pgbouncer_configurations : {}
-  server_id = local.primary_server_id
 
+resource "azurerm_postgresql_flexible_server_configuration" "db_pgbouncer_config" {
+  for_each = var.single_server || contains(var.skip_config_for_stopped_servers, var.server_name) ? {} : var.pgbouncer_configurations != null ? var.pgbouncer_configurations : {}
+
+  server_id  = local.primary_server_id
   name       = each.key
   value      = each.value
   depends_on = [azurerm_postgresql_flexible_server_configuration.db_configs]
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "db_config_extensions" {
-  count     = var.extensions ? 1 : 0
-  name      = "azure.extensions"
+  for_each = var.extensions && !contains(var.skip_config_for_stopped_servers, var.server_name) ? { "ext" = "azure.extensions" } : {}
+
+  name      = each.value
   server_id = local.primary_server_id
   value     = var.extensions_list
 }
 
+
 resource "azurerm_postgresql_flexible_server_configuration" "logfiles_download_enable" {
-  name      = "logfiles.download_enable"
+  for_each = contains(var.skip_config_for_stopped_servers, var.server_name) ? {} : { "cfg" = "logfiles.download_enable" }
+
+  name      = each.value
   server_id = local.primary_server_id
   value     = var.logfiles_download_enable
 }
 
+
 resource "azurerm_postgresql_flexible_server_configuration" "logfiles_retention_days" {
-  name      = "logfiles.retention_days"
+  for_each = contains(var.skip_config_for_stopped_servers, var.server_name) ? {} : { "cfg" = "logfiles.retention_days" }
+
+  name      = each.value
   server_id = local.primary_server_id
   value     = var.logfiles_retention_days
 }
+
 
 resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
   count                      = var.log_to_azure_monitor_flexible.enable && !var.single_server ? 1 : 0
