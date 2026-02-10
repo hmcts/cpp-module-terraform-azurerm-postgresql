@@ -570,3 +570,38 @@ variable "maintenance_window" {
     start_minute = 0
   }
 }
+
+variable "service_criticality" {
+  description = "Service criticality rating from 1-5. Services with criticality >= 4 will be enrolled in immutable backup vault when enable_immutable_backups is true. Default is 1 to avoid inadvertent vault enrollments."
+  type        = number
+  default     = 1
+
+  validation {
+    condition     = var.service_criticality >= 1 && var.service_criticality <= 5
+    error_message = "Service criticality must be between 1 and 5."
+  }
+}
+
+variable "enable_immutable_backups" {
+  description = "Enable enrollment in Azure Backup Vault for immutable long-term backups. When true and service_criticality >= 4, the PostgreSQL server will be enrolled in the specified backup vault. Feature flag for controlled rollout. Only supported for flexible servers."
+  type        = bool
+  default     = false
+}
+
+variable "backup_vault_name" {
+  description = "Name of the Azure Data Protection Backup Vault. Required when enable_immutable_backups is true and service_criticality >= 4. The module will look up this vault to get its ID and managed identity for RBAC assignments."
+  type        = string
+  default     = null
+}
+
+variable "backup_vault_resource_group" {
+  description = "Resource group name containing the Azure Data Protection Backup Vault. Required when enable_immutable_backups is true and service_criticality >= 4."
+  type        = string
+  default     = null
+}
+
+variable "backup_policy_name" {
+  description = "Name of the backup policy within the backup vault (e.g., 'postgresql-crit4-5'). Required when enable_immutable_backups is true and service_criticality >= 4. The policy ID will be constructed as {vault_id}/backupPolicies/{policy_name}."
+  type        = string
+  default     = null
+}

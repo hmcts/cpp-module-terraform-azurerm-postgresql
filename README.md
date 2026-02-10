@@ -113,6 +113,98 @@ module "postgresql" {
 }
 ```
 
+## Immutable Backup Configuration
+
+This module supports enrolling PostgreSQL Flexible Servers in Azure Data Protection Backup Vaults for immutable long-term backups based on service criticality ratings. This feature is controlled by a feature flag for gradual rollout.
+
+### How It Works
+
+The module uses a **criticality-based approach** where services are automatically enrolled in backup vaults based on their criticality rating:
+
+- **Service Criticality Rating**: Scale from 1-5 (defaults to 1)
+- **Enrollment Threshold**: Services with criticality **>= 4** are eligible for backup vault enrollment
+- **Feature Flag**: `enable_immutable_backups` must be `true` to activate enrollment
+- **Architecture**: The backup vault **pulls** backups from PostgreSQL (not a push model)
+- **No Disruption**: Enrollment creates metadata only - no PostgreSQL restarts or configuration changes
+
+### Requirements
+
+1. Azure Data Protection Backup Vault must already exist
+2. Backup policy must be created in the vault
+3. Only supported for **PostgreSQL Flexible Server** (not single server)
+4. Module automatically handles RBAC permissions for vault's managed identity
+
+### Usage Example
+
+```hcl
+module "postgresql" {
+  source = "Azure/postgresql/azurerm"
+
+  # Standard configuration
+  resource_group_name = "production-rg"
+  location            = "uksouth"
+  server_name         = "psf-prod-ccm01-myapp"
+  sku_name            = "GP_Standard_D2s_v3"
+  storage_mb          = 32768
+
+  # Backup configuration for critical services
+  service_criticality      = 5                           # Criticality rating 1-5
+  enable_immutable_backups = true                        # Feature flag for controlled rollout
+  backup_vault_name        = "backup-vault-prod"         # Existing backup vault name
+  backup_vault_resource_group = "backup-infra-rg"        # Backup vault resource group
+  backup_policy_name       = "postgresql-crit4-5"        # Policy name in the vault
+
+  # ... other configuration
+}
+```
+
+### Enrollment Decision Matrix
+
+| service_criticality | enable_immutable_backups | single_server | Result |
+|-------------------|------------------------|---------------|---------|
+| 1, 2, or 3        | true                   | false         | ❌ No enrollment (criticality too low) |
+| 4 or 5            | false                  | false         | ❌ No enrollment (feature flag disabled) |
+| 4 or 5            | true                   | false         | ✅ **Enrolled in backup vault** |
+| 4 or 5            | true                   | true          | ❌ No enrollment (single server not supported) |
+
+### What Gets Created
+
+When enrollment conditions are met, the module automatically:
+
+1. **Data Source Lookup**: Queries the backup vault to get its managed identity
+2. **RBAC Assignments**: Grants vault's identity two roles:
+   - `Reader` on the resource group (read server metadata)
+   - `PostgreSQL Flexible Server Long Term Retention Backup Role` on the server
+3. **Backup Instance**: Enrolls the PostgreSQL server in the vault following the specified policy
+
+### Important Notes
+
+- **Default Criticality**: Defaults to `1` to prevent unintended backup vault enrollments
+- **No Server Changes**: Enrollment is metadata only - no changes to PostgreSQL configuration or restarts
+- **Pull Model**: Vault initiates backups on schedule; PostgreSQL server remains passive
+- **RBAC Managed**: Module handles all necessary permissions automatically
+- **Flexible Server Only**: Not supported for deprecated single server deployments
+- **Backward Compatible**: Feature is opt-in; existing deployments remain unchanged
+
+### Monitoring Enrollment
+
+Check the module outputs to verify enrollment status:
+
+```hcl
+output "backup_status" {
+  value = {
+    enrolled            = module.postgresql.is_enrolled_in_backup_vault
+    backup_instance_id  = module.postgresql.backup_instance_id
+    backup_instance_name = module.postgresql.backup_instance_name
+  }
+}
+```
+
+### Reference Documentation
+
+- [Azure Backup for PostgreSQL Flexible Server](https://learn.microsoft.com/en-gb/azure/backup/tutorial-create-first-backup-azure-database-postgresql-flex)
+- [Data Protection Backup Instance Resource](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/data_protection_backup_instance_postgresql_flexible_server)
+
 ## Test
 
 ### Configurations

@@ -29,6 +29,54 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns-vn-link" {
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# BACKUP VAULT INFRASTRUCTURE FOR TESTING
+# Creates test backup vault and policy to validate backup enrollment functionality
+# ---------------------------------------------------------------------------------------------------------------------
+
+resource "azurerm_resource_group" "backup" {
+  count    = var.enable_immutable_backups ? 1 : 0
+  name     = format("test-backup-%s", random_id.name.hex)
+  location = var.location
+}
+
+resource "azurerm_data_protection_backup_vault" "test" {
+  count               = var.enable_immutable_backups ? 1 : 0
+  name                = format("backup-vault-test-%s", random_id.name.hex)
+  resource_group_name = azurerm_resource_group.backup[0].name
+  location            = var.location
+  datastore_type      = "VaultStore"
+  redundancy          = "LocallyRedundant"
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  tags = var.tags
+}
+
+resource "azurerm_data_protection_backup_policy_postgresql_flexible_server" "test" {
+  count    = var.enable_immutable_backups ? 1 : 0
+  name     = "postgresql-test"
+  vault_id = azurerm_data_protection_backup_vault.test[0].id
+
+  # Weekly backup schedule (Sunday at 03:00 UTC) - matches production test policy
+  backup_repeating_time_intervals = ["R/2024-01-07T03:00:00+00:00/P1W"]
+  time_zone                       = "UTC"
+
+  # Minimal retention - 1 week for testing purposes
+  default_retention_rule {
+    life_cycle {
+      duration        = "P7D"
+      data_store_type = "VaultStore"
+    }
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# POSTGRESQL MODULE WITH BACKUP ENROLLMENT
+# ---------------------------------------------------------------------------------------------------------------------
+
 module "postgresql" {
   for_each = { for instance in var.psql_instances : instance.server_name => instance }
   source   = "../../"
@@ -75,9 +123,19 @@ module "postgresql" {
   entra_admin_pwd                             = "test"
   admin_password_special_char                 = var.admin_password_special_char
   maintenance_window                          = var.maintenance_window
+
+  # Backup vault configuration (created above for testing)
+  service_criticality         = var.service_criticality
+  enable_immutable_backups    = var.enable_immutable_backups
+  backup_vault_name           = var.enable_immutable_backups ? azurerm_data_protection_backup_vault.test[0].name : null
+  backup_vault_resource_group = var.enable_immutable_backups ? azurerm_resource_group.backup[0].name : null
+  backup_policy_name          = var.enable_immutable_backups ? azurerm_data_protection_backup_policy_postgresql_flexible_server.test[0].name : null
+
   depends_on = [
     azurerm_resource_group.test,
     azurerm_private_dns_zone.dns,
-    azurerm_private_dns_zone_virtual_network_link.dns-vn-link
+    azurerm_private_dns_zone_virtual_network_link.dns-vn-link,
+    azurerm_data_protection_backup_vault.test,
+    azurerm_data_protection_backup_policy_postgresql_flexible_server.test
   ]
 }
