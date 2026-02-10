@@ -42,4 +42,17 @@ func TestTerraformPostgresql(t *testing.T) {
 	} else {
 		t.Fatal("Error: Configurations list dont match!")
 	}
+
+	// Verify backup vault enrollment
+	backupVaultId := terraform.Output(t, terraformOptions, "backup_vault_id")
+	assert.NotEmpty(t, backupVaultId, "Backup vault ID should not be empty when enable_immutable_backups is true")
+
+	backupVaultName := terraform.Output(t, terraformOptions, "backup_vault_name")
+	assert.NotEmpty(t, backupVaultName, "Backup vault name should not be empty when enable_immutable_backups is true")
+
+	isEnrolled := terraform.OutputMapOfObjects(t, terraformOptions, "is_enrolled_in_backup_vault")
+	assert.Equal(t, true, isEnrolled["psf-lab-ccm01-hearing"], "Server should be enrolled in backup vault when criticality >= 4")
+
+	backupInstanceIds := terraform.OutputMapOfObjects(t, terraformOptions, "backup_instance_ids")
+	assert.NotNil(t, backupInstanceIds["psf-lab-ccm01-hearing"], "Backup instance ID should exist for enrolled server")
 }

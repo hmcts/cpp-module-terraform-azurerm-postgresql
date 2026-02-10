@@ -13,26 +13,24 @@ resource "azurerm_resource_group" "testreplica" {
 }
 
 resource "azurerm_resource_group" "dns" {
+  count    = var.private_dns_config.enable_data_lookup ? 0 : 1
   name     = format("test-mdv-%s", random_id.name.hex)
   location = var.location
 }
 
 resource "azurerm_private_dns_zone" "dns" {
+  count               = var.private_dns_config.enable_data_lookup ? 0 : 1
   name                = "privatelink.postgres.database.azure.com"
-  resource_group_name = azurerm_resource_group.dns.name
+  resource_group_name = azurerm_resource_group.dns[0].name
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "dns-vn-link" {
+  count                 = var.private_dns_config.enable_data_lookup ? 0 : 1
   name                  = "postgres-vn-link"
-  resource_group_name   = azurerm_resource_group.dns.name
-  private_dns_zone_name = azurerm_private_dns_zone.dns.name
+  resource_group_name   = azurerm_resource_group.dns[0].name
+  private_dns_zone_name = azurerm_private_dns_zone.dns[0].name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
 }
-
-# ---------------------------------------------------------------------------------------------------------------------
-# BACKUP VAULT INFRASTRUCTURE FOR TESTING
-# Creates test backup vault and policy to validate backup enrollment functionality
-# ---------------------------------------------------------------------------------------------------------------------
 
 resource "azurerm_resource_group" "backup" {
   count    = var.enable_immutable_backups ? 1 : 0
@@ -47,6 +45,9 @@ resource "azurerm_data_protection_backup_vault" "test" {
   location            = var.location
   datastore_type      = "VaultStore"
   redundancy          = "LocallyRedundant"
+
+  soft_delete                = "Off"
+  retention_duration_in_days = 14
 
   identity {
     type = "SystemAssigned"
@@ -73,9 +74,16 @@ resource "azurerm_data_protection_backup_policy_postgresql_flexible_server" "tes
   }
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# POSTGRESQL MODULE WITH BACKUP ENROLLMENT
-# ---------------------------------------------------------------------------------------------------------------------
+# Wait for RBAC propagation before the module creates the backup instance
+resource "time_sleep" "wait_for_backup_vault" {
+  count           = var.enable_immutable_backups ? 1 : 0
+  create_duration = "60s"
+
+  depends_on = [
+    azurerm_data_protection_backup_vault.test,
+    azurerm_data_protection_backup_policy_postgresql_flexible_server.test
+  ]
+}
 
 module "postgresql" {
   for_each = { for instance in var.psql_instances : instance.server_name => instance }
@@ -98,7 +106,7 @@ module "postgresql" {
   extensions                                  = each.value.extensions
   single_server                               = each.value.single_server
   delegated_subnet_id                         = var.subnet_config.enable_data_lookup ? data.azurerm_subnet.delegated_subnet_id.0.id : null
-  private_dns_zone_id                         = azurerm_private_dns_zone.dns.id
+  private_dns_zone_id                         = var.private_dns_config.enable_data_lookup ? data.azurerm_private_dns_zone.private_dns_zone_id[0].id : azurerm_private_dns_zone.dns[0].id
   ssl_enforcement_enabled                     = true
   public_network_access_enabled               = false
   create_replica_instance                     = each.value.create_replica_instance
@@ -133,9 +141,8 @@ module "postgresql" {
 
   depends_on = [
     azurerm_resource_group.test,
-    azurerm_private_dns_zone.dns,
-    azurerm_private_dns_zone_virtual_network_link.dns-vn-link,
     azurerm_data_protection_backup_vault.test,
-    azurerm_data_protection_backup_policy_postgresql_flexible_server.test
+    azurerm_data_protection_backup_policy_postgresql_flexible_server.test,
+    time_sleep.wait_for_backup_vault
   ]
 }
