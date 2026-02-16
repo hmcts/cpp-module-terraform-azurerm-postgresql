@@ -33,13 +33,13 @@ resource "azurerm_private_dns_zone_virtual_network_link" "dns-vn-link" {
 }
 
 resource "azurerm_resource_group" "backup" {
-  count    = var.enable_immutable_backups ? 1 : 0
+  count    = var.service_criticality >= 4 ? 1 : 0
   name     = format("test-backup-%s", random_id.name.hex)
   location = var.location
 }
 
 resource "azurerm_data_protection_backup_vault" "test" {
-  count               = var.enable_immutable_backups ? 1 : 0
+  count               = var.service_criticality >= 4 ? 1 : 0
   name                = format("backup-vault-test-%s", random_id.name.hex)
   resource_group_name = azurerm_resource_group.backup[0].name
   location            = var.location
@@ -57,7 +57,7 @@ resource "azurerm_data_protection_backup_vault" "test" {
 }
 
 resource "azurerm_data_protection_backup_policy_postgresql_flexible_server" "test" {
-  count    = var.enable_immutable_backups ? 1 : 0
+  count    = var.service_criticality >= 4 ? 1 : 0
   name     = "postgresql-test"
   vault_id = azurerm_data_protection_backup_vault.test[0].id
 
@@ -74,14 +74,28 @@ resource "azurerm_data_protection_backup_policy_postgresql_flexible_server" "tes
   }
 }
 
+# Grant the vault's managed identity Reader on the PG server's resource group
+# In production this would be managed by the backup vault module
+resource "azurerm_role_assignment" "backup_vault_reader" {
+  count                = var.service_criticality >= 4 ? 1 : 0
+  scope                = azurerm_resource_group.test.id
+  role_definition_name = "Reader"
+  principal_id         = azurerm_data_protection_backup_vault.test[0].identity[0].principal_id
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 # Wait for RBAC propagation before the module creates the backup instance
 resource "time_sleep" "wait_for_backup_vault" {
-  count           = var.enable_immutable_backups ? 1 : 0
+  count           = var.service_criticality >= 4 ? 1 : 0
   create_duration = "60s"
 
   depends_on = [
     azurerm_data_protection_backup_vault.test,
-    azurerm_data_protection_backup_policy_postgresql_flexible_server.test
+    azurerm_data_protection_backup_policy_postgresql_flexible_server.test,
+    azurerm_role_assignment.backup_vault_reader
   ]
 }
 
@@ -134,10 +148,9 @@ module "postgresql" {
 
   # Backup vault configuration (created above for testing)
   service_criticality         = var.service_criticality
-  enable_immutable_backups    = var.enable_immutable_backups
-  backup_vault_name           = var.enable_immutable_backups ? azurerm_data_protection_backup_vault.test[0].name : null
-  backup_vault_resource_group = var.enable_immutable_backups ? azurerm_resource_group.backup[0].name : null
-  backup_policy_name          = var.enable_immutable_backups ? azurerm_data_protection_backup_policy_postgresql_flexible_server.test[0].name : null
+  backup_vault_name           = var.service_criticality >= 4 ? azurerm_data_protection_backup_vault.test[0].name : null
+  backup_vault_resource_group = var.service_criticality >= 4 ? azurerm_resource_group.backup[0].name : null
+  backup_policy_name          = var.service_criticality >= 4 ? azurerm_data_protection_backup_policy_postgresql_flexible_server.test[0].name : null
 
   depends_on = [
     azurerm_resource_group.test,

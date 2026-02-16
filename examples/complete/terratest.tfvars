@@ -73,8 +73,7 @@ psql_instances = [
   },
 ]
 
-service_criticality      = 5    # High criticality to trigger enrollment (>= 4)
-enable_immutable_backups = true # Enable backup vault enrollment for testing
+service_criticality = 5 # High criticality to trigger enrollment (>= 4)
 
 # Vault name and policy name are constructed automatically in main.tf
 # No need to specify them here. They're created as part of the test

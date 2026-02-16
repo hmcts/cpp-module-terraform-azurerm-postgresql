@@ -1,33 +1,29 @@
 locals {
   # Determine if backup enrollment should be created
-  enable_backup_enrollment = var.enable_immutable_backups && var.service_criticality >= 4 && !var.single_server
+  # Based only on plan-time-known variables to avoid "count depends on resource attributes" errors
+  enable_backup_enrollment = var.service_criticality >= 4 && !var.single_server
 
   # Construct backup policy ID from vault ID and policy name
   backup_policy_id = local.enable_backup_enrollment ? "${data.azurerm_data_protection_backup_vault.vault[0].id}/backupPolicies/${var.backup_policy_name}" : null
-}
-
-data "azurerm_resource_group" "main" {
-  count = local.enable_backup_enrollment ? 1 : 0
-  name  = var.resource_group_name
 }
 
 data "azurerm_data_protection_backup_vault" "vault" {
   count               = local.enable_backup_enrollment ? 1 : 0
   name                = var.backup_vault_name
   resource_group_name = var.backup_vault_resource_group
-}
 
-resource "azurerm_role_assignment" "backup_vault_reader" {
-  count                = local.enable_backup_enrollment ? 1 : 0
-  scope                = data.azurerm_resource_group.main[0].id
-  role_definition_name = "Reader"
-  principal_id         = data.azurerm_data_protection_backup_vault.vault[0].identity[0].principal_id
-
-  # Prevent role assignment from being destroyed before backup instance
   lifecycle {
-    create_before_destroy = true
+    precondition {
+      condition     = var.backup_vault_name != null && var.backup_vault_resource_group != null && var.backup_policy_name != null
+      error_message = "backup_vault_name, backup_vault_resource_group, and backup_policy_name must be provided when service_criticality >= 4."
+    }
   }
 }
+
+# NOTE: The backup vault's managed identity also requires "Reader" role on the
+# resource group containing the PostgreSQL server. This is managed in the
+# backup vault module (cpp-module-terraform-azurerm-backup-vault) to avoid
+# conflicts when multiple PostgreSQL instances share the same resource group.
 
 resource "azurerm_role_assignment" "backup_vault_postgres_ltr" {
   count                = local.enable_backup_enrollment ? 1 : 0
@@ -50,10 +46,17 @@ resource "azurerm_data_protection_backup_instance_postgresql_flexible_server" "m
   server_id        = local.primary_server_id
   backup_policy_id = local.backup_policy_id
 
+  # NOTE: On immutable vaults, backup instances cannot be deleted while recovery
+  # points exist. This is by design — immutability protects against deletion.
+  # To remove this resource from Terraform state without deleting it:
+  #   terraform state rm '<resource_address>'
+  # To fully delete, first disable immutability on the vault, then stop
+  # protection and delete the backup instance via Azure CLI or portal.
+
   # Ensure RBAC permissions are in place before attempting enrollment
   # Without these, enrollment will fail with "Unauthorized" error
+  # NOTE: Reader role on RG is managed by the backup vault module
   depends_on = [
-    azurerm_role_assignment.backup_vault_reader,
     azurerm_role_assignment.backup_vault_postgres_ltr,
     azurerm_postgresql_flexible_server.flexible_server
   ]

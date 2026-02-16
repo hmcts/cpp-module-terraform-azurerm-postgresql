@@ -422,27 +422,3 @@ variable "service_criticality" {
   type        = number
   default     = 1
 }
-
-variable "enable_immutable_backups" {
-  description = "Enable immutable backups via Azure Backup Vault for testing"
-  type        = bool
-  default     = false
-}
-
-variable "backup_vault_name" {
-  description = "Name of the Azure Backup Vault for testing"
-  type        = string
-  default     = null
-}
-
-variable "backup_vault_resource_group" {
-  description = "Resource group containing the backup vault for testing"
-  type        = string
-  default     = null
-}
-
-variable "backup_policy_name" {
-  description = "Name of the backup policy within the vault for testing"
-  type        = string
-  default     = null
-}
