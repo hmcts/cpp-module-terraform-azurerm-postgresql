@@ -71,3 +71,18 @@ output "flexible_server_configurations" {
 output "group_list" {
   value = local.group_list
 }
+
+output "backup_instance_id" {
+  description = "The ID of the backup instance enrollment. Null if backup enrollment is not enabled or conditions not met."
+  value       = try(azurerm_data_protection_backup_instance_postgresql_flexible_server.main[0].id, null)
+}
+
+output "backup_instance_name" {
+  description = "The name of the backup instance enrollment. Null if backup enrollment is not enabled or conditions not met."
+  value       = try(azurerm_data_protection_backup_instance_postgresql_flexible_server.main[0].name, null)
+}
+
+output "is_enrolled_in_backup_vault" {
+  description = "Boolean indicating whether this PostgreSQL server is enrolled in a backup vault for immutable backups."
+  value       = local.enable_backup_enrollment
+}

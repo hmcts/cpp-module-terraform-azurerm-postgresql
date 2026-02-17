@@ -416,3 +416,9 @@ variable "maintenance_window" {
     start_minute = 0
   }
 }
+
+variable "service_criticality" {
+  description = "Service criticality rating from 1-5 for testing backup enrollment"
+  type        = number
+  default     = 1
+}

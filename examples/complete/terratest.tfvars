@@ -72,3 +72,8 @@ psql_instances = [
     extensions = false
   },
 ]
+
+service_criticality = 5 # High criticality to trigger enrollment (>= 4)
+
+# Vault name and policy name are constructed automatically in main.tf
+# No need to specify them here. They're created as part of the test
