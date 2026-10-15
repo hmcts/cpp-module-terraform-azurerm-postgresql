@@ -72,6 +72,21 @@ module "postgresql" {
   entra_admin_user                            = var.entra_admin_user
   entra_admin_pwd                             = "test"
 
+  logfiles_download_enable         = "off"
+  logfiles_retention_days          = "7"
+  entra_db_project_specific_groups = []
+  admin_password_special_char      = true
+  maintenance_window = {
+    enable       = false
+    day_of_week  = 0
+    start_hour   = 0
+    start_minute = 0
+  }
+  service_criticality         = 1
+  backup_policy_name          = null
+  backup_vault_name           = null
+  backup_vault_resource_group = null
+
   depends_on = [
     azurerm_resource_group.test,
     azurerm_private_dns_zone.dns,

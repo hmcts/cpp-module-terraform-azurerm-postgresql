@@ -497,3 +497,72 @@ variable "platform" {
   type    = string
   default = "nlv"
 }
+
+variable "admin_password_special_char" {
+  description = "Include special characters in the generated administrator password."
+  type        = bool
+  default     = true
+}
+
+variable "entra_db_project_specific_groups" {
+  description = "Compatibility input for caller-managed project-specific Entra groups; this module does not grant these groups database access."
+  type        = list(string)
+  default     = []
+}
+
+variable "logfiles_download_enable" {
+  description = "Enable downloadable Flexible Server logs (on or off)."
+  type        = string
+  default     = "off"
+}
+
+variable "logfiles_retention_days" {
+  description = "Number of days to retain downloadable Flexible Server logs."
+  type        = string
+  default     = "7"
+}
+
+variable "maintenance_window" {
+  description = "Custom maintenance window for Flexible Server."
+  type = object({
+    enable       = bool
+    day_of_week  = number
+    start_hour   = number
+    start_minute = number
+  })
+  default = {
+    enable       = false
+    day_of_week  = 0
+    start_hour   = 0
+    start_minute = 0
+  }
+}
+
+variable "service_criticality" {
+  description = "Service criticality from 1 to 5. Flexible Servers rated 4 or 5 require backup vault enrollment."
+  type        = number
+  default     = 1
+
+  validation {
+    condition     = var.service_criticality >= 1 && var.service_criticality <= 5 && floor(var.service_criticality) == var.service_criticality
+    error_message = "Service criticality must be an integer between 1 and 5."
+  }
+}
+
+variable "backup_vault_name" {
+  description = "Name of the existing Azure Data Protection Backup Vault."
+  type        = string
+  default     = null
+}
+
+variable "backup_vault_resource_group" {
+  description = "Resource group containing the existing backup vault."
+  type        = string
+  default     = null
+}
+
+variable "backup_policy_name" {
+  description = "Name of the existing PostgreSQL Flexible Server backup policy in the vault."
+  type        = string
+  default     = null
+}

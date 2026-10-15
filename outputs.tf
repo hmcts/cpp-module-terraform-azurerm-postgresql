@@ -67,3 +67,18 @@ output "flexible_server_configurations" {
     }
   })
 }
+
+output "backup_instance_id" {
+  description = "Backup instance ID, or null when backup enrollment is disabled."
+  value       = try(azurerm_data_protection_backup_instance_postgresql_flexible_server.main[0].id, null)
+}
+
+output "backup_instance_name" {
+  description = "Backup instance name, or null when backup enrollment is disabled."
+  value       = try(azurerm_data_protection_backup_instance_postgresql_flexible_server.main[0].name, null)
+}
+
+output "is_enrolled_in_backup_vault" {
+  description = "Whether this server is configured for backup vault enrollment."
+  value       = local.enable_backup_enrollment
+}

@@ -3,6 +3,12 @@
 
 This Terraform module creates a Azure PostgreSQL Database.
 
+## AzureRM 4.x Migration
+
+The 4.x branch requires Terraform 1.2 or later and AzureRM `>= 4.0.0, < 5.0.0`.
+See [the migration notes](TERRAFORM_UPGRADE_BREAKING_CHANGES.md) for restored module
+inputs, backup requirements, authentication changes, and state precautions.
+
 ## Usage in Terraform 0.13
 
 ```hcl

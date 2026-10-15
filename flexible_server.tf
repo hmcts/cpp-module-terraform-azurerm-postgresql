@@ -23,6 +23,15 @@ resource "azurerm_postgresql_flexible_server" "flexible_server" {
   source_server_id                  = var.source_server_id
   point_in_time_restore_time_in_utc = var.point_in_time_restore_time_in_utc
 
+  dynamic "maintenance_window" {
+    for_each = var.maintenance_window.enable ? [1] : []
+    content {
+      day_of_week  = var.maintenance_window.day_of_week
+      start_hour   = var.maintenance_window.start_hour
+      start_minute = var.maintenance_window.start_minute
+    }
+  }
+
   dynamic "high_availability" {
     for_each = var.create_replica_instance ? [1] : []
     content {
@@ -90,9 +99,9 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.log_analytics_workspace.0.id
 
   dynamic "enabled_log" {
-    for_each = var.log_to_azure_monitor_flexible.logs
+    for_each = { for category, settings in var.log_to_azure_monitor_flexible.logs : category => settings if settings.enabled }
     content {
-      category = log.key
+      category = enabled_log.key
     }
   }
 
@@ -100,6 +109,20 @@ resource "azurerm_monitor_diagnostic_setting" "log_to_azure_monitor_flexible" {
     category = "AllMetrics"
     enabled  = var.log_to_azure_monitor_flexible.all_metrics.enabled
   }
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "logfiles_download_enable" {
+  count     = var.single_server ? 0 : 1
+  name      = "logfiles.download_enable"
+  server_id = local.primary_server_id
+  value     = var.logfiles_download_enable
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "logfiles_retention_days" {
+  count     = var.single_server ? 0 : 1
+  name      = "logfiles.retention_days"
+  server_id = local.primary_server_id
+  value     = var.logfiles_retention_days
 }
 
 resource "azurerm_monitor_metric_alert" "az_postgres_alert_active_connections_flexible" {
