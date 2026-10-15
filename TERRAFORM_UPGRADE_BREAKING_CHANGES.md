@@ -3,7 +3,9 @@
 ## Changes Applied
 
 - Constrained AzureRM to `>= 4.0.0, < 5.0.0` in the module and complete example.
-- Raised the Terraform minimum to 1.2 for backup enrollment preconditions.
+- Raised the Terraform minimum to 1.7 for non-destructive group ownership removal.
+- Synced main's group-name calculation and stopped managing instance Entra groups
+  using a `removed` block with `destroy = false`. Removed the stale RBAC dependency.
 - Restored the nine caller inputs present on the main branch: `logfiles_download_enable`,
   `logfiles_retention_days`, `entra_db_project_specific_groups`,
   `admin_password_special_char`, `maintenance_window`, `service_criticality`,
@@ -29,8 +31,10 @@ AzureRM 4.x requires `subscription_id` in the root provider configuration or
 `ARM_SUBSCRIPTION_ID` in the environment. This module does not configure credentials.
 
 The project-specific Entra groups input is retained for compatibility with main.
-As on main, it does not create groups or grant database access. Existing
-`entra_db_groups` handling is unchanged.
+As on main, it does not create groups or grant database access. `entra_db_groups`
+still controls database role setup, but no longer creates Entra groups. Existing
+instance groups tracked by this module are forgotten on apply, not deleted from
+Azure. Groups must exist and be managed outside this module before database setup.
 
 Backup vaults and policies must already exist. The vault identity must have Reader
 on the PostgreSQL resource group, managed outside this module. This module grants
