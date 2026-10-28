@@ -8,6 +8,8 @@ resource "null_resource" "db_setup" {
   provisioner "local-exec" {
     command = <<EOT
       unique_sql_file_name="final_${each.value.group_name}_${local.group_project}.sql"
+      # add lock to stop collision
+      printf 'SELECT pg_advisory_lock(73829104);\n%s\n' "$render_template" > ${path.module}/roles/$unique_sql_file_name
       printf 'SELECT pg_advisory_lock(73829104);\n%s\n' "$render_template" > ${path.module}/roles/$unique_sql_file_name
       az login --service-principal -u ${data.azuread_service_principal.current.client_id} -t ${data.azurerm_client_config.current.tenant_id} -p ${data.azurerm_key_vault_secret.entra_admin.0.value}
       export PGPASSWORD=$(az account get-access-token --resource-type oss-rdbms --query "[accessToken]" -o tsv)
