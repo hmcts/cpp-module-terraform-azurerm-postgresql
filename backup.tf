@@ -37,6 +37,11 @@ resource "azurerm_data_protection_backup_instance_postgresql_flexible_server" "m
 
   depends_on = [
     azurerm_role_assignment.backup_vault_postgres_ltr,
-    azurerm_postgresql_flexible_server.flexible_server
+    azurerm_postgresql_flexible_server.flexible_server,
+    azurerm_postgresql_flexible_server_configuration.db_configs,
+    azurerm_postgresql_flexible_server_configuration.db_pgbouncer_config,
+    azurerm_postgresql_flexible_server_configuration.db_config_extensions,
+    azurerm_postgresql_flexible_server_configuration.logfiles_download_enable,
+    azurerm_postgresql_flexible_server_configuration.logfiles_retention_days
   ]
 }
